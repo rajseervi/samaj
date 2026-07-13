@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" style="stop-color:#FFF8DC"/>
+      <stop offset="100%" style="stop-color:#FFD700"/>
+    </radialGradient>
+  </defs>
+  <circle cx="100" cy="100" r="95" fill="#8B0000" stroke="#DAA520" stroke-width="4"/>
+  <circle cx="100" cy="100" r="88" fill="#DC143C"/>
+  <circle cx="100" cy="100" r="82" fill="url(#glow)"/>
+  <ellipse cx="100" cy="58" rx="32" ry="30" fill="#8B0000"/>
+  <ellipse cx="100" cy="100" rx="28" ry="6" fill="#8B0000"/>
+  <path d="M66 100 Q66 158 100 185 Q134 158 134 100" fill="#8B0000"/>
+  <path d="M84 38 L90 18 L100 28 L110 18 L116 38" fill="#DAA520"/>
+  <circle cx="92" cy="55" r="3.5" fill="#FFF8DC"/>
+  <circle cx="108" cy="55" r="3.5" fill="#FFF8DC"/>
+  <circle cx="100" cy="48" r="2.5" fill="#FF0000"/>
+  <text x="100" y="172" text-anchor="middle" font-size="14" font-family="serif" fill="#FFD700" font-weight="bold">श्री आई माताजी</text>
+</svg>

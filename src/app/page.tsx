@@ -1,65 +1,158 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useRef, useCallback, useMemo } from "react";
+import PosterForm from "@/components/PosterForm";
+import PosterPreview from "@/components/PosterPreview";
+import { PosterFormData } from "@/types";
+
+const DAY_NAMES = [
+  "रविवार",
+  "सोमवार",
+  "मंगलवार",
+  "बुधवार",
+  "गुरुवार",
+  "शुक्रवार",
+  "शनिवार",
+];
+
+function getTodayDate(): string {
+  const today = new Date();
+  const y = today.getFullYear();
+  const m = String(today.getMonth() + 1).padStart(2, "0");
+  const d = String(today.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function getTodayDay(): string {
+  return DAY_NAMES[new Date().getDay()];
+}
+
+const DEFAULT_MESSAGE = `आज की परमार्थ सेवा आज हरिद्वार भवन की भोजनशाला में 'प्रसाद' स्वरूप नाश्ते एवं दोनों समय के भोजन सेवा का परम सौभाग्य प्राप्त हुआ है। परिवार द्वारा समाज के प्रति प्रेम त्याग और समर्पण की भावना से परिपूर्ण यह सेवा-कार्य अत्यंत ही वंदनीय है ऐसे महान भामाशाह जो समाज के प्रेरणास्पद है। यह उनका अनुपम योगदान समाज हित में सदैव स्मरणीय रहेगा।
+
+हम इस पुनीत कार्य हेतु आपके हृदय से आभारी हैं और जगत जननी श्री आई माताजी से उनके उत्तम स्वास्थ्य, चिरस्थायी सुख-समृद्धि तथा दीर्घायु के लिए हार्दिक प्रार्थना करतें हैं
+
+परम धर्म सेवा, अन्नदान महादान - मानव कल्याण का अनुपम प्रयास`;
+
+const initialFormData: PosterFormData = {
+  date: getTodayDate(),
+  day: getTodayDay(),
+  sponsorName: "",
+  village: "",
+  message: DEFAULT_MESSAGE,
+  photoDataUrl: null,
+};
 
 export default function Home() {
+  const [formData, setFormData] = useState<PosterFormData>(initialFormData);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const posterRef = useRef<HTMLDivElement>(null);
+
+  const handleDownload = useCallback(async () => {
+    if (!posterRef.current) return;
+
+    setIsDownloading(true);
+    try {
+      const html2canvas = (await import("html2canvas")).default;
+
+      const canvas = await html2canvas(posterRef.current, {
+        scale: 3, // High quality output
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: null,
+        logging: false,
+      });
+
+      const link = document.createElement("a");
+      link.download = `bhamashah-poster-${formData.date || "date"}.png`;
+      link.href = canvas.toDataURL("image/png", 1.0);
+      link.click();
+    } catch (err) {
+      console.error("Download failed:", err);
+      alert("पोस्टर डाउनलोड करने में त्रुटि। कृपया पुनः प्रयास करें।");
+    } finally {
+      setIsDownloading(false);
+    }
+  }, [formData.date]);
+
+  const handleReset = () => {
+    setFormData(initialFormData);
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-[#FFF8E7]">
+      {/* ── Header ── */}
+      <header className="bg-gradient-to-r from-[#FF9933] via-[#FF8800] to-[#E88920] shadow-lg">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[#FFF8E7] flex items-center justify-center">
+              <span className="text-xl">🕉️</span>
+            </div>
+            <div>
+              <h1 className="text-white font-extrabold text-lg leading-tight">
+                बैनर/पोस्टर जनरेटर
+              </h1>
+              <p className="text-[#FFF3D6] text-xs">
+                श्री अखिल भारतीय सीरवी समाज ट्रस्ट, हरिद्वार
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </header>
+
+      {/* ── Main Layout ── */}
+      <main className="max-w-6xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          {/* Left: Form */}
+          <div className="bg-white rounded-2xl shadow-xl border-2 border-[#DAA520] p-6">
+            <PosterForm data={formData} onChange={setFormData} />
+
+            {/* Action Buttons */}
+            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={handleDownload}
+                disabled={isDownloading}
+                className="flex-1 px-6 py-3.5 bg-[#FF9933] text-white font-bold rounded-xl shadow-lg hover:bg-[#E88920] disabled:opacity-60 disabled:cursor-not-allowed transition text-lg flex items-center justify-center gap-2"
+              >
+                {isDownloading ? (
+                  <>
+                    <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    डाउनलोड हो रहा है...
+                  </>
+                ) : (
+                  <>
+                    <span>📥</span> पोस्टर डाउनलोड करें
+                  </>
+                )}
+              </button>
+              <button
+                onClick={handleReset}
+                className="px-6 py-3.5 border-2 border-[#DAA520] text-[#8B0000] font-bold rounded-xl hover:bg-[#FFF3D6] transition"
+              >
+                🔄 रीसेट करें
+              </button>
+            </div>
+          </div>
+
+          {/* Right: Poster Preview */}
+          <div className="lg:sticky lg:top-8">
+            <h2 className="text-center text-lg font-bold text-[#8B0000] mb-3">
+              📋 लाइव पूर्वावलोकन
+            </h2>
+            <PosterPreview ref={posterRef} data={formData} />
+          </div>
         </div>
       </main>
+
+      {/* ── Footer ── */}
+      <footer className="bg-gradient-to-r from-[#8B0000] to-[#5C0000] text-[#FFD700] text-center py-4 mt-8">
+        <p className="text-sm font-semibold">
+          श्री अखिल भारतीय सीरवी समाज ट्रस्ट, भोजन शाला हरिद्वार
+        </p>
+        <p className="text-xs mt-1 opacity-80">परम धर्म सेवा • अन्नदान महादान</p>
+      </footer>
     </div>
   );
 }
