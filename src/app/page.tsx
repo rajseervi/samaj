@@ -928,7 +928,8 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#FFF8E7] overflow-x-hidden">
       <Header />
-      <MouseGlow />
+      {/* Mouse glow - desktop only, useless on touch devices */}
+      <div className="hidden md:block"><MouseGlow /></div>
 
       <style jsx global>{`
         /* ── Particle animations ── */
@@ -1144,9 +1145,25 @@ export default function HomePage() {
             transition: "transform 0.15s ease-out",
           }}
         >
-          {/* 3D Rotating Om */}
-          <AnimatedHeading className="mb-10 mt-10" delay={0}>
+          {/* 3D Rotating Om (desktop) */}
+          <AnimatedHeading className="mb-10 mt-10 hidden md:block" delay={0}>
             <EnhancedRotatingOm parallaxX={mouseParallax.x} parallaxY={mouseParallax.y} />
+          </AnimatedHeading>
+
+          {/* Simple static Om icon (mobile) */}
+          <AnimatedHeading className="mt-8 mb-6 md:hidden" delay={0}>
+            <div className="w-40 h-40 mx-auto rounded-full flex items-center justify-center relative"
+              style={{
+                background: "radial-gradient(circle at 38% 32%, #FFE55C 0%, #FFD700 15%, #DAA520 35%, #B8860B 55%, #8B6508 100%)",
+                border: "3px solid #DAA520",
+                boxShadow: "0 0 40px rgba(255,215,0,0.4), 0 0 80px rgba(255,165,0,0.2)",
+              }}
+            >
+              <div className="absolute inset-2 rounded-full border border-white/15" />
+              <img src="/om-gold.svg" alt="ॐ" className="w-[42%] h-[42%] relative z-10"
+                style={{ filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.6))" }}
+              />
+            </div>
           </AnimatedHeading>
 
           {/* Main Heading */}
