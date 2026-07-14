@@ -438,6 +438,51 @@ function MandalaRings({ scrollOffset }: { scrollOffset: number }) {
   );
 }
 
+/* ─── Seva Section Particles (client-only to avoid hydration mismatch) ─── */
+function SevaParticles() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  if (!mounted) return null;
+
+  const particles = Array.from({ length: 20 }).map((_, i) => {
+    const s = i * 137.5;
+    return {
+      w: 3 + ((s * 7) % 400) / 100,
+      h: 3 + ((s * 13) % 400) / 100,
+      l: ((s * 3) % 10000) / 100,
+      t: ((s * 17) % 10000) / 100,
+      dur: 4 + ((s * 5) % 600) / 100,
+      delay: ((s * 11) % 500) / 100,
+      isGold: i % 2 === 0,
+    };
+  });
+
+  return (
+    <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+      {particles.map((p, i) => (
+        <div
+          key={`sevap-${i}`}
+          className="absolute rounded-full"
+          style={{
+            width: `${p.w}px`,
+            height: `${p.h}px`,
+            backgroundColor: p.isGold ? "#FFD700" : "#FFA500",
+            left: `${p.l}%`,
+            top: `${p.t}%`,
+            opacity: 0,
+            boxShadow: `0 0 4px ${p.isGold ? "#FFD700" : "#FFA500"}`,
+            animationName: "sevaParticleRise",
+            animationDuration: `${p.dur}s`,
+            animationTimingFunction: "ease-in-out",
+            animationIterationCount: "infinite",
+            animationDelay: `${p.delay}s`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 /* ─── Floating Diyas ─── */
 function FloatingDiyas() {
   const [hasMounted, setHasMounted] = useState(false);
@@ -518,28 +563,39 @@ function FloatingDiyas() {
 
 /* ─── Golden Light Rays ─── */
 function LightRays() {
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => { setHasMounted(true); }, []);
+  if (!hasMounted) return null;
+
+  // Deterministic values — seeded by index so server and client match
+  const rays = Array.from({ length: 20 }).map((_, i) => {
+    const seed = i * 47.11;
+    const angle = (i / 20) * 360;
+    const height = 180 + (seed % 120);
+    const dur = 4 + ((seed * 7) % 400) / 100;
+    const delay = ((seed * 13) % 300) / 100;
+    return { angle, height, dur, delay };
+  });
+
   return (
     <div className="absolute left-1/2 top-[40%] -translate-x-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
-      {Array.from({ length: 20 }).map((_, i) => {
-        const angle = (i / 20) * 360;
-        return (
-          <div
-            key={i}
-            className="absolute origin-bottom"
-            style={{
-              width: "3px",
-              height: `${180 + Math.random() * 120}px`,
-              background: `linear-gradient(0deg, rgba(255,215,0,0.5) 0%, rgba(255,165,0,0.3) 40%, transparent 100%)`,
-              transform: `rotate(${angle}deg)`,
-              left: "50%",
-              bottom: "0",
-              borderRadius: "2px",
-              animation: `rayShimmer ${4 + Math.random() * 4}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 3}s`,
-            }}
-          />
-        );
-      })}
+      {rays.map((ray, i) => (
+        <div
+          key={i}
+          className="absolute origin-bottom"
+          style={{
+            width: "3px",
+            height: `${ray.height}px`,
+            background: `linear-gradient(0deg, rgba(255,215,0,0.5) 0%, rgba(255,165,0,0.3) 40%, transparent 100%)`,
+            transform: `rotate(${ray.angle}deg)`,
+            left: "50%",
+            bottom: "0",
+            borderRadius: "2px",
+            animation: `rayShimmer ${ray.dur}s ease-in-out infinite`,
+            animationDelay: `${ray.delay}s`,
+          }}
+        />
+      ))}
     </div>
   );
 }
@@ -1341,26 +1397,7 @@ export default function HomePage() {
 
       {/* ── SEVA SERVICES ── */}
       <section id="services" className="py-20 bg-gradient-to-b from-[#8B0000] via-[#6B0000] to-[#3d0000] text-white relative overflow-hidden">
-        {/* Background animated particles */}
-        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          {Array.from({ length: 20 }).map((_, i) => (
-            <div
-              key={`sevap-${i}`}
-              className="absolute rounded-full"
-              style={{
-                width: `${3 + Math.random() * 4}px`,
-                height: `${3 + Math.random() * 4}px`,
-                background: i % 2 === 0 ? "#FFD700" : "#FFA500",
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                opacity: 0,
-                boxShadow: `0 0 4px ${i % 2 === 0 ? "#FFD700" : "#FFA500"}`,
-                animation: `sevaParticleRise ${4 + Math.random() * 6}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 5}s`,
-              }}
-            />
-          ))}
-        </div>
+        <SevaParticles />
 
         {/* Floating diya silhouettes in background */}
         <div className="absolute inset-0 pointer-events-none opacity-[0.06]" aria-hidden="true">
