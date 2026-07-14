@@ -1097,7 +1097,7 @@ export default function HomePage() {
       >
         {/* Multi-layer animated background */}
         <div
-          className="absolute inset-0 animate-gradient-slow"
+          className="absolute inset-0"
           style={{
             background: `
               radial-gradient(ellipse at 50% 30%, rgba(255,215,0,0.4) 0%, transparent 50%),
@@ -1105,30 +1105,36 @@ export default function HomePage() {
               radial-gradient(ellipse at 80% 60%, rgba(255,165,0,0.3) 0%, transparent 40%),
               linear-gradient(160deg, #1a0a00 0%, #3d1500 20%, #8B4513 40%, #D2691E 70%, #FF8C00 100%)
             `,
-            backgroundSize: "400% 400%",
           }}
         />
 
-        {/* Dark overlay mesh pattern */}
+        {/* Simple golden glow circles for mobile (no animation) */}
+        <div className="md:hidden absolute inset-0 pointer-events-none" aria-hidden="true">
+          <div className="absolute top-[15%] left-1/2 -translate-x-1/2 w-64 h-64 rounded-full bg-[radial-gradient(circle,rgba(255,215,0,0.15)_0%,transparent_70%)]" />
+          <div className="absolute top-[50%] left-[10%] w-32 h-32 rounded-full bg-[radial-gradient(circle,rgba(255,165,0,0.1)_0%,transparent_70%)]" />
+          <div className="absolute top-[50%] right-[10%] w-32 h-32 rounded-full bg-[radial-gradient(circle,rgba(255,165,0,0.1)_0%,transparent_70%)]" />
+        </div>
+
+        {/* Dark overlay mesh pattern (desktop only - hides on mobile to reduce paint) */}
         <div
-          className="absolute inset-0 opacity-[0.06]"
+          className="hidden md:block absolute inset-0 opacity-[0.06]"
           style={{
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='1' fill='%23FFD700'/%3E%3Cpath d='M20 0 L20 40 M0 20 L40 20' stroke='%23FFD700' stroke-width='0.3'/%3E%3C/svg%3E")`,
             backgroundSize: "60px 60px",
           }}
         />
 
-        {/* Enhanced particle field */}
-        <EnhancedParticleField />
+        {/* Enhanced particle field (desktop only) */}
+        <div className="hidden md:block"><EnhancedParticleField /></div>
 
-        {/* 3D Mandala rings */}
-        <MandalaRings scrollOffset={scrollOffset} />
+        {/* 3D Mandala rings (desktop only) */}
+        <div className="hidden md:block"><MandalaRings scrollOffset={scrollOffset} /></div>
 
-        {/* Floating Diyas */}
-        <FloatingDiyas />
+        {/* Floating Diyas (desktop only) */}
+        <div className="hidden md:block"><FloatingDiyas /></div>
 
-        {/* Golden light rays */}
-        <LightRays />
+        {/* Golden light rays (desktop only) */}
+        <div className="hidden md:block"><LightRays /></div>
 
         {/* Main content */}
         <div
