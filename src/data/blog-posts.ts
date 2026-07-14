@@ -21,7 +21,7 @@ export const blogPosts: BlogPost[] = [
       "हरिद्वार भवन की भोजनशाला में 500 से अधिक श्रद्धालुओं को प्रेम और श्रद्धा से भोजन कराया गया। निःस्वार्थ सेवा और सामुदायिक जुड़ाव का एक अद्भुत दिन।",
     date: "2026-04-15",
     category: "seva",
-    imageUrl: "/mataji.svg",
+    imageUrl: "/mataji-blog.jpg",
     author: "समाज ट्रस्ट",
   },
   {
@@ -34,7 +34,7 @@ export const blogPosts: BlogPost[] = [
       "शुभ नौ रात्रियों के दौरान भव्य सामुदायिक भंडारे का आयोजन। हजारों श्रद्धालुओं ने प्रार्थना, भक्ति और सामुदायिक भोजन में भाग लिया।",
     date: "2026-03-24",
     category: "event",
-    imageUrl: "/mataji.svg",
+    imageUrl: "/mataji-blog.jpg",
     author: "समाज ट्रस्ट",
   },
   {
@@ -47,7 +47,7 @@ export const blogPosts: BlogPost[] = [
       "बढ़ते सामुदायिक समर्थन के साथ, ट्रस्ट ने अधिक श्रद्धालुओं को प्रतिदिन सेवा देने के लिए हरिद्वार भोजनशाला के विस्तार की घोषणा की।",
     date: "2026-02-10",
     category: "announcement",
-    imageUrl: "/mataji.svg",
+    imageUrl: "/mataji-blog.jpg",
     author: "समाज ट्रस्ट",
   },
   {
@@ -60,7 +60,7 @@ export const blogPosts: BlogPost[] = [
       "उन महान दानदाताओं को हार्दिक श्रद्धांजलि जिनकी उदारता सेवा को जीवित रखती है। त्याग, भक्ति और सामुदायिक भावना की कहानियाँ।",
     date: "2026-01-28",
     category: "story",
-    imageUrl: "/mataji.svg",
+    imageUrl: "/mataji-blog.jpg",
     author: "समाज ट्रस्ट",
   },
   {
@@ -73,7 +73,7 @@ export const blogPosts: BlogPost[] = [
       "ट्रस्ट ने जगत जननी श्री आई माताजी की जयंती गहरी श्रद्धा, भजन और भव्य सामुदायिक भोज के साथ मनाई।",
     date: "2025-12-05",
     category: "event",
-    imageUrl: "/mataji-photo.jpg",
+    imageUrl: "/mataji-blog.jpg",
     author: "समाज ट्रस्ट",
   },
   {
@@ -86,7 +86,7 @@ export const blogPosts: BlogPost[] = [
       "हरिद्वार के आसपास जरूरतमंदों को कंबल, गर्म भोजन और सर्दी की आवश्यक वस्तुएं वितरित की गईं। 1000 से अधिक परिवारों को सहायता।",
     date: "2025-11-20",
     category: "seva",
-    imageUrl: "/mataji.svg",
+    imageUrl: "/mataji-blog.jpg",
     author: "समाज ट्रस्ट",
   },
 ];

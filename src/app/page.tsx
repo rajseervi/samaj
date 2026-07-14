@@ -88,8 +88,10 @@ function BlogCard({ post }: { post: BlogPost }) {
       className="bg-white rounded-2xl shadow-lg border-2 border-[#DAA520] overflow-hidden hover:shadow-2xl transition-shadow duration-300 cursor-pointer group"
       style={{ transition: "transform 0.1s ease-out, box-shadow 0.3s" }}
     >
-      <div className="relative h-40 overflow-hidden bg-gradient-to-br from-[#FFF8E7] to-[#FFE4B5] flex items-center justify-center">
-        <img src={post.imageUrl} alt="" className="w-20 h-20 object-contain opacity-60" />
+      <div className="relative h-40 overflow-hidden">
+        <img src={post.imageUrl} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+        {/* Dark gradient overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
         <span className={`absolute top-2 right-2 text-xs font-bold text-white px-2 py-1 rounded-full ${catColors[post.category]}`}>
           {catLabels[post.category]}
         </span>
