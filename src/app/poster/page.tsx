@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import PosterForm from "@/components/PosterForm";
 import PosterPreview from "@/components/PosterPreview";
 import Link from "next/link";
+import { useAuth, AuthProvider } from "@/lib/auth-context";
 import { PosterFormData } from "@/types";
 
 const DAY_NAMES = [
@@ -43,10 +45,30 @@ const initialFormData: PosterFormData = {
   photoDataUrl: null,
 };
 
-export default function PosterPage() {
+function PosterPageInner() {
+  const { isLoggedIn } = useAuth();
+  const router = useRouter();
   const [formData, setFormData] = useState<PosterFormData>(initialFormData);
   const [isDownloading, setIsDownloading] = useState(false);
   const posterRef = useRef<HTMLDivElement>(null);
+
+  /* ─── Auth guard ─── */
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/admin/login");
+    }
+  }, [isLoggedIn, router]);
+
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-[#FFF8E7] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-[#FFD700] border-t-[#8B0000] rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-[#8B0000] font-bold">रीडायरेक्ट हो रहा है...</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleDownload = useCallback(async () => {
     if (!posterRef.current) return;
@@ -81,10 +103,10 @@ export default function PosterPage() {
       <header className="relative">
         <div className="h-2 bg-gradient-to-r from-[#8B0000] via-[#FFD700] to-[#8B0000]" />
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="text-[#8B0000] font-bold hover:text-[#FF9933] transition">
-            ← होम पेज
+          <Link href="/admin/dashboard" className="text-[#8B0000] font-bold hover:text-[#FF9933] transition">
+            ← प्रबंधन पैनल
           </Link>
-          <h1 className="text-lg font-extrabold text-[#8B0000]">📋 पोस्टर जनरेटर</h1>
+          <h1 className="text-lg font-extrabold text-[#8B0000]">📋 पोस्टर जनरेटर (एडमिन)</h1>
         </div>
       </header>
 
@@ -130,5 +152,13 @@ export default function PosterPage() {
         <p className="text-xs mt-1 opacity-80">परम धर्म सेवा • अन्नदान महादान</p>
       </footer>
     </div>
+  );
+}
+
+export default function PosterPage() {
+  return (
+    <AuthProvider>
+      <PosterPageInner />
+    </AuthProvider>
   );
 }

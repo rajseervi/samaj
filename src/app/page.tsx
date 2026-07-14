@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { getBlogPosts, type BlogPost } from "@/data/blog-posts";
+import Header from "@/components/Header";
 
 /* ─── 3D Tilt Hook ─── */
 function useTilt<T extends HTMLElement>() {
@@ -89,7 +90,7 @@ function BlogCard({ post }: { post: BlogPost }) {
     >
       <div className="relative h-40 overflow-hidden bg-gradient-to-br from-[#FFF8E7] to-[#FFE4B5] flex items-center justify-center">
         <img src={post.imageUrl} alt="" className="w-20 h-20 object-contain opacity-60" />
-        <span className="absolute top-2 right-2 text-xs font-bold text-white px-2 py-1 rounded-full ${catColors[post.category]}">
+        <span className={`absolute top-2 right-2 text-xs font-bold text-white px-2 py-1 rounded-full ${catColors[post.category]}`}>
           {catLabels[post.category]}
         </span>
       </div>
@@ -104,66 +105,6 @@ function BlogCard({ post }: { post: BlogPost }) {
           {post.excerptHi}
         </p>
       </div>
-    </div>
-  );
-}
-
-/* ─── Particle Field ─── */
-function ParticleField() {
-  const [hasMounted, setHasMounted] = React.useState(false);
-  React.useEffect(() => { setHasMounted(true); }, []);
-
-  if (!hasMounted) return null;
-
-  return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-      {Array.from({ length: 14 }).map((_, i) => {
-        const width = 6 + Math.random() * 8;
-        const height = 6 + Math.random() * 8;
-        const color = i % 3 === 0 ? "#FFD700" : i % 3 === 1 ? "#FF9933" : "#8B0000";
-        const left = Math.random() * 100;
-        const top = Math.random() * 100;
-        const opacity = 0.2 + Math.random() * 0.3;
-        const duration = 4 + Math.random() * 6;
-        const delay = Math.random() * 5;
-        return (
-          <div
-            key={i}
-            className="absolute rounded-full"
-            style={{
-              width: width + "px",
-              height: height + "px",
-              background: color,
-              left: left + "%",
-              top: top + "%",
-              opacity,
-              animation: `float ${duration}s ease-in-out infinite`,
-              animationDelay: delay + "s",
-            }}
-          />
-        );
-      })}
-    </div>
-  );
-}
-
-/* ─── 3D Rotating Om ─── */
-function RotatingOm() {
-  return (
-    <div className="relative w-40 h-40 mx-auto" style={{ perspective: "400px" }}>
-      <div
-        className="w-full h-full rounded-full bg-gradient-to-br from-[#FFD700] to-[#B8860B] flex items-center justify-center shadow-2xl border-4 border-[#FFD700]"
-        style={{ animation: "rotateOm 8s linear infinite", transformStyle: "preserve-3d" }}
-      >
-        <span className="text-6xl drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)]" style={{ animation: "counterRotate 8s linear infinite" }}>
-          🕉️
-        </span>
-      </div>
-      {/* Rotating ring */}
-      <div
-        className="absolute inset-0 rounded-full border-2 border-dashed border-[#FFD700] opacity-40"
-        style={{ animation: "rotateOm 5s linear infinite reverse" }}
-      />
     </div>
   );
 }
@@ -230,7 +171,6 @@ function ThreeDCarousel() {
 
   return (
     <div className="relative">
-      {/* Controls */}
       <div className="flex justify-center gap-4 mb-6 flex-wrap">
         <button
           onClick={handlePrev}
@@ -253,11 +193,7 @@ function ThreeDCarousel() {
         </button>
       </div>
 
-      {/* 3D Stage */}
-      <div
-        className="relative mx-auto"
-        style={{ width: "100%", height: "420px", perspective: "1000px" }}
-      >
+      <div className="relative mx-auto" style={{ width: "100%", height: "420px", perspective: "1000px" }}>
         <div
           className="absolute left-1/2 top-1/2"
           style={{
@@ -272,8 +208,8 @@ function ThreeDCarousel() {
             const x = Math.sin(rad) * radius;
             const z = Math.cos(rad) * radius;
             const isFront = Math.abs(z - radius) < 40;
-            const scale = isFront ? 1.1 : 0.8;
-            const opacity = isFront ? 1 : 0.55;
+            const scale = isFront ? 1.1 : 0.85;
+            const opacity = isFront ? 1 : 0.7;
             const zIndex = isFront ? 10 : 0;
 
             return (
@@ -288,7 +224,6 @@ function ThreeDCarousel() {
                   transform: `translate3d(${x}px, 0, ${z}px) rotateY(${theta}deg) scale(${scale})`,
                   opacity,
                   zIndex,
-                  filter: isFront ? "none" : "blur(1px)",
                 }}
                 onClick={() => setSelectedIndex(i)}
                 onMouseEnter={() => setIsPaused(true)}
@@ -305,10 +240,7 @@ function ThreeDCarousel() {
                   }}
                 >
                   <span className="text-5xl mb-3 drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]">{item.icon}</span>
-                  <h4
-                    className="text-base font-extrabold text-center leading-tight"
-                    style={{ color: item.color }}
-                  >
+                  <h4 className="text-base font-extrabold text-center leading-tight" style={{ color: item.color }}>
                     {item.title}
                   </h4>
                   <p className="text-xs font-semibold mt-1 text-[#5C3317] opacity-80">{item.subtitle}</p>
@@ -317,8 +249,6 @@ function ThreeDCarousel() {
             );
           })}
         </div>
-
-        {/* Center glow */}
         <div
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full pointer-events-none"
           style={{
@@ -328,7 +258,6 @@ function ThreeDCarousel() {
         />
       </div>
 
-      {/* Dot indicators */}
       <div className="flex justify-center gap-2 mt-6 flex-wrap">
         {GALLERY_ITEMS.map((item, i) => (
           <button
@@ -344,7 +273,6 @@ function ThreeDCarousel() {
         ))}
       </div>
 
-      {/* Selected Item Modal */}
       {selectedIndex !== null && (
         <div
           className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
@@ -355,15 +283,10 @@ function ThreeDCarousel() {
             onClick={(e) => e.stopPropagation()}
           >
             <span className="text-7xl block mb-4">{GALLERY_ITEMS[selectedIndex].icon}</span>
-            <h3
-              className="text-2xl font-extrabold mb-2"
-              style={{ color: GALLERY_ITEMS[selectedIndex].color }}
-            >
+            <h3 className="text-2xl font-extrabold mb-2" style={{ color: GALLERY_ITEMS[selectedIndex].color }}>
               {GALLERY_ITEMS[selectedIndex].title}
             </h3>
-            <p className="text-lg text-[#5C3317] font-semibold mb-6">
-              {GALLERY_ITEMS[selectedIndex].subtitle}
-            </p>
+            <p className="text-lg text-[#5C3317] font-semibold mb-6">{GALLERY_ITEMS[selectedIndex].subtitle}</p>
             <p className="text-[#5C3317] leading-relaxed mb-6">
               श्री अखिल भारतीय सीरवी समाज ट्रस्ट, हरिद्वार भवन की भोजनशाला में निरंतर सेवा कार्य चल रहे हैं।
               जगत जननी श्री आई माताजी की कृपा से समाज का हर कार्य सफल हो रहा है।
@@ -378,7 +301,6 @@ function ThreeDCarousel() {
         </div>
       )}
 
-      {/* Animation keyframes */}
       <style jsx>{`
         @keyframes fadeSlideUp {
           from { opacity: 0; transform: translateY(30px) scale(0.95); }
@@ -392,130 +314,762 @@ function ThreeDCarousel() {
   );
 }
 
-/* ─── MAIN PAGE ─── */
+/* ═════════════════════════════════════════════════
+   ENHANCED 3D HERO SECTION COMPONENTS
+   ═════════════════════════════════════════════════ */
+
+/* ─── Enhanced Particle Field with glow trails ─── */
+function EnhancedParticleField() {
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => { setHasMounted(true); }, []);
+  if (!hasMounted) return null;
+
+  const particles = Array.from({ length: 30 }).map((_, i) => {
+    const size = 3 + Math.random() * 10;
+    const colors = ["#FFD700", "#FFA500", "#FF8C00", "#FFB347", "#FFF8DC", "#FF9933"];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const depth = 0.3 + Math.random() * 1.5;
+    return { id: i, size, color, depth,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      delay: Math.random() * 8,
+      duration: 6 + Math.random() * 10,
+      drift: (Math.random() - 0.5) * 40,
+    };
+  });
+
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true" style={{ perspective: "800px" }}>
+      {particles.map((p) => (
+        <div
+          key={p.id}
+          className="absolute rounded-full"
+          style={{
+            width: p.size + "px",
+            height: p.size + "px",
+            background: `radial-gradient(circle, ${p.color}, transparent)`,
+            left: p.left + "%",
+            top: p.top + "%",
+            opacity: 0,
+            boxShadow: `0 0 ${p.size * 2}px ${p.color}80, 0 0 ${p.size * 4}px ${p.color}40`,
+            animation: `floatParticle ${p.duration}s ease-in-out infinite`,
+            animationDelay: p.delay + "s",
+            transform: `translateZ(${p.depth * 20}px)`,
+            filter: `blur(${p.size < 5 ? 0.5 : 0}px)`,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ─── 3D Mandala Rings ─── */
+function MandalaRings({ scrollOffset }: { scrollOffset: number }) {
+  return (
+    <div className="absolute left-1/2 top-[40%] -translate-x-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true"
+      style={{ perspective: "1000px", transformStyle: "preserve-3d" }}>
+      {/* Ring 1 - outermost */}
+      <div
+        className="absolute rounded-full border-2 border-dashed"
+        style={{
+          width: "500px", height: "500px",
+          marginLeft: "-250px", marginTop: "-250px",
+          borderColor: "rgba(255,215,0,0.2)",
+          animation: "rotateMandala 25s linear infinite",
+          transform: `rotateX(60deg) translateZ(-20px)`,
+        }}
+      />
+      {/* Ring 2 */}
+      <div
+        className="absolute rounded-full border border-dotted"
+        style={{
+          width: "420px", height: "420px",
+          marginLeft: "-210px", marginTop: "-210px",
+          borderColor: "rgba(255,165,0,0.25)",
+          animation: "rotateMandala 20s linear infinite reverse",
+          transform: `rotateX(60deg) translateZ(-5px)`,
+        }}
+      />
+      {/* Ring 3 */}
+      <div
+        className="absolute rounded-full border-2"
+        style={{
+          width: "340px", height: "340px",
+          marginLeft: "-170px", marginTop: "-170px",
+          borderColor: "rgba(255,215,0,0.35)",
+          animation: "rotateMandala 15s linear infinite",
+          transform: `rotateX(60deg) translateZ(10px)`,
+          boxShadow: "0 0 40px rgba(255,215,0,0.15), inset 0 0 40px rgba(255,215,0,0.1)",
+        }}
+      />
+      {/* Ring 4 - innermost */}
+      <div
+        className="absolute rounded-full border-2 border-dashed"
+        style={{
+          width: "260px", height: "260px",
+          marginLeft: "-130px", marginTop: "-130px",
+          borderColor: "rgba(255,165,0,0.4)",
+          animation: "rotateMandala 10s linear infinite reverse",
+          transform: `rotateX(60deg) translateZ(25px)`,
+        }}
+      />
+      {/* Mandala dots on rings */}
+      {Array.from({ length: 24 }).map((_, i) => {
+        const angle = (i / 24) * 360;
+        const rad = (angle * Math.PI) / 180;
+        const radius = 170;
+        return (
+          <div
+            key={`dot-${i}`}
+            className="absolute rounded-full"
+            style={{
+              width: "8px", height: "8px",
+              background: i % 3 === 0 ? "#FFD700" : i % 3 === 1 ? "#FFA500" : "#FF8C00",
+              boxShadow: `0 0 6px ${i % 3 === 0 ? "#FFD700" : i % 3 === 1 ? "#FFA500" : "#FF8C00"}`,
+              left: `calc(50% + ${Math.cos(rad) * radius}px)`,
+              top: `calc(50% + ${Math.sin(rad) * radius * 0.5}px)`,
+              animation: `mandalaDotPulse ${2 + (i % 3)}s ease-in-out infinite`,
+              animationDelay: `${i * 0.1}s`,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+/* ─── Floating Diyas ─── */
+function FloatingDiyas() {
+  const [hasMounted, setHasMounted] = useState(false);
+  const diyaFlames = useRef([0.38, 0.42, 0.36, 0.44, 0.49]).current;
+
+  useEffect(() => { setHasMounted(true); }, []);
+  if (!hasMounted) return null;
+
+  const diyas = [
+    { left: "8%", top: "25%", delay: 0, size: 40, floatDur: 5 },
+    { left: "85%", top: "30%", delay: 1.5, size: 35, floatDur: 6 },
+    { left: "12%", top: "65%", delay: 3, size: 32, floatDur: 4.5 },
+    { left: "80%", top: "70%", delay: 0.8, size: 38, floatDur: 5.5 },
+    { left: "50%", top: "12%", delay: 2.2, size: 30, floatDur: 4 },
+  ];
+
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+      {diyas.map((d, i) => (
+        <div
+          key={i}
+          className="absolute"
+          style={{
+            left: d.left, top: d.top,
+            width: d.size + "px", height: d.size + "px",
+            animation: `floatDiya ${d.floatDur}s ease-in-out infinite`,
+            animationDelay: d.delay + "s",
+            filter: "drop-shadow(0 0 12px rgba(255,140,0,0.6))",
+          }}
+        >
+          {/* Diya bowl */}
+          <div
+            className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-3/4 rounded-b-full"
+            style={{
+              background: "linear-gradient(180deg, #B8860B 0%, #8B6914 50%, #6B4F12 100%)",
+              boxShadow: "0 4px 15px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,215,0,0.3)",
+            }}
+          />
+          {/* Flame */}
+          <div
+            className="absolute left-1/2 -translate-x-1/2"
+            style={{
+              bottom: "60%",
+              width: "14px", height: "18px",
+              animation: `flickerFlame ${diyaFlames[i]}s ease-in-out infinite alternate`,
+            }}
+          >
+            <div
+              className="w-full h-full rounded-[60%_60%_40%_40%]"
+              style={{
+                background: "linear-gradient(180deg, #FFD700 0%, #FFA500 40%, #FF6347 100%)",
+                boxShadow: "0 0 10px #FFA500, 0 0 20px #FF6347, 0 0 30px rgba(255,100,0,0.5)",
+              }}
+            />
+            {/* Inner flame */}
+            <div
+              className="absolute top-1 left-1/2 -translate-x-1/2 w-[8px] h-[10px] rounded-[60%_60%_40%_40%]"
+              style={{
+                background: "linear-gradient(180deg, #FFF8DC 0%, #FFD700 100%)",
+              }}
+            />
+          </div>
+          {/* Glow aura */}
+          <div
+            className="absolute left-1/2 -translate-x-1/2 rounded-full"
+            style={{
+              bottom: "50%",
+              width: "30px", height: "30px",
+              background: "radial-gradient(circle, rgba(255,200,0,0.5) 0%, transparent 70%)",
+              animation: "glowPulse 2s ease-in-out infinite",
+            }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ─── Golden Light Rays ─── */
+function LightRays() {
+  return (
+    <div className="absolute left-1/2 top-[40%] -translate-x-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
+      {Array.from({ length: 20 }).map((_, i) => {
+        const angle = (i / 20) * 360;
+        return (
+          <div
+            key={i}
+            className="absolute origin-bottom"
+            style={{
+              width: "3px",
+              height: `${180 + Math.random() * 120}px`,
+              background: `linear-gradient(0deg, rgba(255,215,0,0.5) 0%, rgba(255,165,0,0.3) 40%, transparent 100%)`,
+              transform: `rotate(${angle}deg)`,
+              left: "50%",
+              bottom: "0",
+              borderRadius: "2px",
+              animation: `rayShimmer ${4 + Math.random() * 4}s ease-in-out infinite`,
+              animationDelay: `${Math.random() * 3}s`,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+/* ─── Enhanced Rotating Om with 3D depth ─── */
+function EnhancedRotatingOm({ parallaxX, parallaxY }: { parallaxX: number; parallaxY: number }) {
+  return (
+    <div
+      className="relative w-56 h-56 mx-auto"
+      style={{
+        perspective: "800px",
+        transform: `translateX(${parallaxX * -30}px) translateY(${parallaxY * -20}px)`,
+        transition: "transform 0.1s ease-out",
+      }}
+    >
+      {/* Outer glow aura */}
+      <div
+        className="absolute inset-[-40px] rounded-full"
+        style={{
+          background: "radial-gradient(circle, rgba(255,215,0,0.3) 0%, rgba(255,165,0,0.15) 40%, transparent 70%)",
+          animation: "pulseAura 3s ease-in-out infinite",
+        }}
+      />
+      {/* Second glow layer */}
+      <div
+        className="absolute inset-[-25px] rounded-full"
+        style={{
+          background: "radial-gradient(circle, rgba(255,200,0,0.2) 0%, transparent 60%)",
+          animation: "pulseAura 3s ease-in-out infinite 0.5s",
+        }}
+      />
+
+      {/* Light rays ring */}
+      <div className="absolute inset-[-35px]" style={{ animation: "rotateOm 20s linear infinite" }}>
+        {Array.from({ length: 16 }).map((_, i) => (
+          <div
+            key={`ray-${i}`}
+            className="absolute top-1/2 left-1/2 origin-left"
+            style={{
+              width: "80px",
+              height: "2px",
+              background: "linear-gradient(90deg, rgba(255,215,0,0.7), transparent)",
+              transform: `rotate(${i * 22.5}deg) translateY(-50%)`,
+              borderRadius: "2px",
+              animation: `rayIntensity ${2 + (i % 3)}s ease-in-out infinite ${i * 0.15}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Outer ring 1 - thick */}
+      <div
+        className="absolute inset-[-16px] rounded-full border-2 border-dotted border-[#FFD700]/40"
+        style={{ animation: "rotateOm 14s linear infinite" }}
+      />
+      {/* Outer ring 2 - thin */}
+      <div
+        className="absolute inset-[-10px] rounded-full border border-[#FFA500]/30"
+        style={{ animation: "rotateOm 11s linear infinite reverse" }}
+      />
+      {/* Outer ring 3 - dashed */}
+      <div
+        className="absolute inset-[-4px] rounded-full border-2 border-dashed border-[#FFD700]/50"
+        style={{ animation: "rotateOm 7s linear infinite" }}
+      />
+
+      {/* Main Om sphere */}
+      <div
+        className="w-full h-full rounded-full flex items-center justify-center border-[6px] border-[#FFD700]"
+        style={{
+          background: "radial-gradient(circle at 40% 35%, #FFD700 0%, #FFA500 30%, #FF8C00 60%, #B8860B 100%)",
+          animation: "rotateOm3D 10s linear infinite",
+          transformStyle: "preserve-3d",
+          boxShadow: `
+            0 0 80px rgba(255,215,0,0.5),
+            0 0 150px rgba(255,165,0,0.3),
+            0 0 200px rgba(255,140,0,0.2),
+            inset 0 0 60px rgba(255,255,200,0.3)
+          `,
+        }}
+      >
+        {/* Inner ring on sphere */}
+        <div
+          className="absolute inset-3 rounded-full border border-white/30"
+          style={{ animation: "rotateOm 6s linear infinite reverse" }}
+        />
+        {/* Om symbol */}
+        <span
+          className="text-7xl relative z-10"
+          style={{
+            animation: "counterRotate3D 10s linear infinite",
+            filter: "drop-shadow(0 4px 20px rgba(0,0,0,0.6)) drop-shadow(0 0 15px rgba(255,215,0,0.4))",
+          }}
+        >
+          🕉️
+        </span>
+      </div>
+
+      {/* Floating sparkles around Om */}
+      {Array.from({ length: 8 }).map((_, i) => {
+        const angle = (i / 8) * 360;
+        const radius = 120;
+        return (
+          <div
+            key={`sparkle-${i}`}
+            className="absolute w-2 h-2 rounded-full"
+            style={{
+              background: "#FFD700",
+              boxShadow: "0 0 8px #FFD700, 0 0 16px #FFA500",
+              left: `calc(50% + ${Math.cos((angle * Math.PI) / 180) * radius}px - 4px)`,
+              top: `calc(50% + ${Math.sin((angle * Math.PI) / 180) * radius}px - 4px)`,
+              animation: `sparkleOrbit ${3 + (i % 3)}s linear infinite`,
+              animationDelay: `${i * 0.3}s`,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+/* ─── Text Reveal Animation ─── */
+function AnimatedHeading({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  return (
+    <div
+      className={`animate-heading-reveal ${className}`}
+      style={{ animationDelay: `${delay}s`, opacity: 0 }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/* ─── Mouse Glow Follower ─── */
+function MouseGlow() {
+  const [pos, setPos] = useState({ x: -100, y: -100 });
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const handleMove = (e: MouseEvent) => {
+      setPos({ x: e.clientX, y: e.clientY });
+      setVisible(true);
+    };
+    const handleLeave = () => setVisible(false);
+    window.addEventListener("mousemove", handleMove);
+    document.addEventListener("mouseleave", handleLeave);
+    return () => {
+      window.removeEventListener("mousemove", handleMove);
+      document.removeEventListener("mouseleave", handleLeave);
+    };
+  }, []);
+
+  return (
+    <div
+      className="fixed pointer-events-none z-0"
+      style={{
+        left: pos.x - 150,
+        top: pos.y - 150,
+        width: "300px",
+        height: "300px",
+        background: "radial-gradient(circle, rgba(255,215,0,0.12) 0%, rgba(255,165,0,0.06) 30%, transparent 70%)",
+        borderRadius: "50%",
+        opacity: visible ? 1 : 0,
+        transition: "opacity 0.3s",
+        transform: "translate(-50%, -50%)",
+      }}
+    />
+  );
+}
+
+/* ═════════════════════════════════════════════════
+   MAIN PAGE
+   ═════════════════════════════════════════════════ */
+
 export default function HomePage() {
   const blogPosts = getBlogPosts();
+  const heroRef = useRef<HTMLElement>(null);
+  const [scrollOffset, setScrollOffset] = useState(0);
+  const [mouseParallax, setMouseParallax] = useState({ x: 0, y: 0 });
+
+  // Track scroll for parallax effects
+  useEffect(() => {
+    const handleScroll = () => setScrollOffset(window.scrollY);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Mouse parallax for hero
+  const handleHeroMouseMove = useCallback((e: React.MouseEvent) => {
+    const el = heroRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setMouseParallax({ x, y });
+  }, []);
+
+  const handleHeroMouseLeave = useCallback(() => {
+    setMouseParallax({ x: 0, y: 0 });
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#FFF8E7] overflow-x-hidden">
+      <Header />
+      <MouseGlow />
+
       <style jsx global>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) scale(1); }
-          33% { transform: translateY(-18px) scale(1.05); }
-          66% { transform: translateY(8px) scale(0.95); }
+        /* ── Particle animations ── */
+        @keyframes floatParticle {
+          0%, 100% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0; }
+          10% { opacity: 0.8; }
+          50% { opacity: 0.4; transform: translateY(-30px) translateX(15px) scale(1.3); }
+          90% { opacity: 0.1; }
+          100% { opacity: 0; transform: translateY(-60px) translateX(-10px) scale(0.5); }
         }
+        /* ── Mandala ── */
+        @keyframes rotateMandala {
+          from { transform: rotateX(60deg) rotateY(0deg); }
+          to { transform: rotateX(60deg) rotateY(360deg); }
+        }
+        @keyframes mandalaDotPulse {
+          0%, 100% { opacity: 0.3; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.8); }
+        }
+        /* ── Om rotations ── */
         @keyframes rotateOm {
           from { transform: rotateY(0deg); }
           to { transform: rotateY(360deg); }
         }
-        @keyframes counterRotate {
+        @keyframes rotateOm3D {
+          0% { transform: rotateY(0deg) rotateX(5deg); }
+          25% { transform: rotateY(90deg) rotateX(1deg); }
+          50% { transform: rotateY(180deg) rotateX(5deg); }
+          75% { transform: rotateY(270deg) rotateX(0deg); }
+          100% { transform: rotateY(360deg) rotateX(5deg); }
+        }
+        @keyframes counterRotate3D {
           from { transform: rotateY(0deg); }
           to { transform: rotateY(-360deg); }
         }
+        @keyframes pulseAura {
+          0%, 100% { transform: scale(0.95); opacity: 0.6; }
+          50% { transform: scale(1.1); opacity: 1; }
+        }
+        @keyframes sparkleOrbit {
+          0% { transform: rotate(0deg) translateX(0px) scale(1); opacity: 1; }
+          50% { transform: rotate(180deg) translateX(10px) scale(0.5); opacity: 0.3; }
+          100% { transform: rotate(360deg) translateX(0px) scale(1); opacity: 1; }
+        }
+        @keyframes rayShimmer {
+          0%, 100% { opacity: 0.2; }
+          50% { opacity: 0.7; }
+        }
+        @keyframes rayIntensity {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 0.9; }
+        }
+        /* ── Diya ── */
+        @keyframes floatDiya {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          25% { transform: translateY(-20px) rotate(2deg); }
+          75% { transform: translateY(10px) rotate(-2deg); }
+        }
+        @keyframes flickerFlame {
+          0% { transform: scaleX(1) scaleY(1); }
+          25% { transform: scaleX(0.85) scaleY(1.1); }
+          50% { transform: scaleX(1.1) scaleY(0.95); }
+          75% { transform: scaleX(0.9) scaleY(1.05); }
+          100% { transform: scaleX(1.05) scaleY(0.9); }
+        }
+        @keyframes glowPulse {
+          0%, 100% { transform: scale(1); opacity: 0.5; }
+          50% { transform: scale(1.5); opacity: 0.8; }
+        }
+        /* ── Heading reveal ── */
+        @keyframes headingReveal {
+          0% { opacity: 0; transform: translateY(30px) scale(0.95); filter: blur(8px); }
+          60% { opacity: 1; filter: blur(0px); }
+          100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); }
+        }
+        .animate-heading-reveal {
+          animation: headingReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        /* ── Gradient shift ── */
         @keyframes gradientShift {
           0% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
           100% { background-position: 0% 50%; }
         }
-        @keyframes pulseGlow {
-          0%, 100% { box-shadow: 0 0 20px rgba(255,215,0,0.3); }
-          50% { box-shadow: 0 0 40px rgba(255,215,0,0.6), 0 0 60px rgba(255,153,51,0.3); }
+        @keyframes gradientShiftSlow {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
         }
         .animate-gradient {
-          background-size: 200% 200%;
-          animation: gradientShift 4s ease infinite;
+          background-size: 300% 300%;
+          animation: gradientShift 6s ease infinite;
+        }
+        .animate-gradient-slow {
+          background-size: 400% 400%;
+          animation: gradientShiftSlow 12s ease infinite;
+        }
+        /* ── Pulse glow for buttons ── */
+        @keyframes pulseGlow {
+          0%, 100% { box-shadow: 0 0 20px rgba(255,215,0,0.3), 0 0 40px rgba(255,165,0,0.2); }
+          50% { box-shadow: 0 0 40px rgba(255,215,0,0.6), 0 0 80px rgba(255,153,51,0.4), 0 0 120px rgba(255,140,0,0.3); }
+        }
+        @keyframes scrollBounce {
+          0%, 100% { transform: translateY(0); opacity: 0.6; }
+          50% { transform: translateY(8px); opacity: 1; }
+        }
+        .animate-scroll-dot {
+          animation: scrollBounce 2s ease-in-out infinite;
+        }
+        /* ── Divider sparkle ── */
+        @keyframes dividerSparkle {
+          0%, 100% { opacity: 0.5; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.3); }
+        }
+        .animate-divider-sparkle {
+          animation: dividerSparkle 2s ease-in-out infinite;
+        }
+        /* ── Seva services ── */
+        @keyframes sevaParticleRise {
+          0%, 100% { opacity: 0; transform: translateY(10px); }
+          20% { opacity: 0.6; }
+          50% { opacity: 0.2; transform: translateY(-30px); }
+          80% { opacity: 0.1; }
+        }
+        @keyframes sevaCardEnter {
+          from { opacity: 0; transform: translateY(40px) scale(0.9); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes sevaIconPulse {
+          0%, 100% { transform: scale(1); opacity: 0.5; }
+          50% { transform: scale(1.3); opacity: 1; }
+        }
+        @keyframes borderSpin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
       `}</style>
 
-      {/* ── HERO SECTION ── */}
-      <section className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden">
-        {/* Animated gradient background */}
+      {/* ════════════════════════════════════════════
+          HERO SECTION - ENHANCED 3D ANIMATED
+          ════════════════════════════════════════════ */}
+      <section
+        ref={heroRef}
+        onMouseMove={handleHeroMouseMove}
+        onMouseLeave={handleHeroMouseLeave}
+        className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
+      >
+        {/* Multi-layer animated background */}
         <div
-          className="absolute inset-0 animate-gradient"
+          className="absolute inset-0 animate-gradient-slow"
           style={{
-            background: "linear-gradient(135deg, #FFCC66, #FFA500, #FF8C00, #FFB347, #FFCC66, #FFA500)",
-            backgroundSize: "300% 300%",
+            background: `
+              radial-gradient(ellipse at 50% 30%, rgba(255,215,0,0.4) 0%, transparent 50%),
+              radial-gradient(ellipse at 20% 60%, rgba(255,140,0,0.3) 0%, transparent 40%),
+              radial-gradient(ellipse at 80% 60%, rgba(255,165,0,0.3) 0%, transparent 40%),
+              linear-gradient(160deg, #1a0a00 0%, #3d1500 20%, #8B4513 40%, #D2691E 70%, #FF8C00 100%)
+            `,
+            backgroundSize: "400% 400%",
           }}
         />
-        {/* Overlay pattern */}
-        <div
-          className="absolute inset-0 opacity-10"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 L35 25 L55 30 L35 35 L30 55 L25 35 L5 30 L25 25 Z' fill='%238B0000'/%3E%3C/svg%3E")`,
-            backgroundSize: "40px 40px",
-          }}
-        />
-        <ParticleField />
 
-        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+        {/* Dark overlay mesh pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.06]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='1' fill='%23FFD700'/%3E%3Cpath d='M20 0 L20 40 M0 20 L40 20' stroke='%23FFD700' stroke-width='0.3'/%3E%3C/svg%3E")`,
+            backgroundSize: "60px 60px",
+          }}
+        />
+
+        {/* Enhanced particle field */}
+        <EnhancedParticleField />
+
+        {/* 3D Mandala rings */}
+        <MandalaRings scrollOffset={scrollOffset} />
+
+        {/* Floating Diyas */}
+        <FloatingDiyas />
+
+        {/* Golden light rays */}
+        <LightRays />
+
+        {/* Main content */}
+        <div
+          className="relative z-10 text-center px-4 max-w-5xl mx-auto"
+          style={{
+            transform: `translateX(${mouseParallax.x * 15}px) translateY(${mouseParallax.y * 10}px)`,
+            transition: "transform 0.15s ease-out",
+          }}
+        >
           {/* 3D Rotating Om */}
-          <div className="mb-8">
-            <RotatingOm />
-          </div>
+          <AnimatedHeading className="mb-10" delay={0}>
+            <EnhancedRotatingOm parallaxX={mouseParallax.x} parallaxY={mouseParallax.y} />
+          </AnimatedHeading>
 
           {/* Main Heading */}
-          <h1
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight tracking-wide"
-            style={{ textShadow: "2px 2px 0 #8B0000, 4px 4px 0 rgba(0,0,0,0.2)" }}
-          >
-            श्री अखिल भारतीय
-            <br />
-            सीरवी समाज ट्रस्ट
-          </h1>
-
-          <p className="text-xl sm:text-2xl font-bold text-[#8B0000] mt-3 drop-shadow-[0_1px_0_rgba(255,255,255,0.5)]">
-            हरिद्वार भवन की भोजनशाला
-          </p>
-
-          {/* Divider */}
-          <div className="flex items-center justify-center gap-4 my-6">
-            <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#FFD700] to-transparent rounded" />
-            <span className="text-[#FFD700] text-2xl drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]">✦</span>
-            <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#FFD700] to-transparent rounded" />
-          </div>
-
-          <p className="text-lg sm:text-xl text-white font-semibold max-w-2xl mx-auto leading-relaxed drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]">
-            परम धर्म सेवा • अन्नदान महादान
-            <br />
-            <span className="text-base opacity-90">
-              जगत जननी श्री आई माताजी की असीम कृपा सदैव बनी रहे
-            </span>
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
-            <Link
-              href="/poster"
-              className="px-8 py-4 bg-[#FF9933] hover:bg-[#E88920] text-white font-extrabold text-lg rounded-2xl shadow-xl transition-all hover:scale-105 flex items-center justify-center gap-2"
-              style={{ animation: "pulseGlow 3s ease-in-out infinite" }}
+          <AnimatedHeading delay={0.3}>
+            <h1
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight tracking-wide"
+              style={{
+                textShadow: `
+                  3px 3px 0 #8B0000,
+                  5px 5px 0 rgba(0,0,0,0.3),
+                  0 0 80px rgba(255,215,0,0.3),
+                  0 0 150px rgba(255,165,0,0.2)
+                `,
+              }}
             >
-              📋 पोस्टर बनाएं
-            </Link>
-            <Link
-              href="#blog"
-              className="px-8 py-4 bg-white/90 backdrop-blur hover:bg-white text-[#8B0000] font-extrabold text-lg rounded-2xl shadow-xl border-2 border-[#FFD700] transition-all hover:scale-105 flex items-center justify-center gap-2"
-            >
-              📖 ब्लॉग पढ़ें
-            </Link>
-          </div>
+              श्री अखिल भारतीय
+              <br />
+              सीरवी समाज ट्रस्ट
+            </h1>
+          </AnimatedHeading>
+
+          {/* Subtitle */}
+          <AnimatedHeading delay={0.6}>
+            <p className="text-xl sm:text-2xl md:text-3xl font-bold text-[#FFD700] mt-4 drop-shadow-[0_2px_8px_rgba(255,140,0,0.6)]">
+              हरिद्वार भवन की भोजनशाला
+            </p>
+          </AnimatedHeading>
+
+          {/* Decorative Divider */}
+          <AnimatedHeading delay={0.8}>
+            <div className="flex items-center justify-center gap-4 my-8">
+              <div className="w-20 sm:w-32 h-[2px] bg-gradient-to-r from-transparent via-[#FFD700] to-transparent rounded" />
+              <span className="text-[#FFD700] text-2xl sm:text-3xl animate-divider-sparkle drop-shadow-[0_0_12px_rgba(255,215,0,0.8)]">
+                ✦
+              </span>
+              <div className="w-20 sm:w-32 h-[2px] bg-gradient-to-r from-transparent via-[#FFD700] to-transparent rounded" />
+            </div>
+          </AnimatedHeading>
+
+          {/* Description */}
+          <AnimatedHeading delay={1.0}>
+            <p className="text-lg sm:text-xl text-white/90 font-semibold max-w-2xl mx-auto leading-relaxed drop-shadow-[0_2px_6px_rgba(0,0,0,0.4)]">
+              परम धर्म सेवा • अन्नदान महादान
+              <br />
+              <span className="text-base opacity-80">
+                जगत जननी श्री आई माताजी की असीम कृपा सदैव बनी रहे
+              </span>
+            </p>
+          </AnimatedHeading>
+
+          {/* CTA Buttons with enhanced design */}
+          <AnimatedHeading delay={1.2}>
+            <div className="flex flex-col sm:flex-row gap-5 justify-center mt-12">
+              {/* Primary CTA - Poster */}
+              <Link
+                href="/contact"
+                className="group relative px-10 py-5 bg-gradient-to-br from-[#FF9933] via-[#FF8C00] to-[#E07800] text-white font-extrabold text-lg rounded-3xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 flex items-center justify-center gap-3 overflow-hidden"
+                style={{
+                  boxShadow: "0 8px 32px rgba(255,140,0,0.5), 0 0 0 3px rgba(255,215,0,0.3), 0 0 80px rgba(255,140,0,0.2)",
+                  animation: "pulseGlow 3s ease-in-out infinite",
+                }}
+              >
+                {/* Inner glow */}
+                <div className="absolute inset-0 bg-gradient-to-t from-white/0 via-white/10 to-white/15 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                {/* Shine line */}
+                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                {/* Sparkle icons */}
+                <span className="absolute -top-1 -right-1 text-lg opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:-translate-y-1 group-hover:translate-x-1">✨</span>
+                <span className="relative z-10 flex items-center gap-2">
+                  <span className="text-2xl group-hover:animate-bounce">📋</span>
+                  <span className="tracking-wide">पोस्टर बनाएं</span>
+                </span>
+              </Link>
+
+              {/* Secondary CTA - Blog */}
+              <Link
+                href="#blog"
+                className="group relative px-10 py-5 bg-white/10 backdrop-blur-md hover:bg-white/20 text-[#FFD700] font-extrabold text-lg rounded-3xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 flex items-center justify-center gap-3 overflow-hidden"
+                style={{
+                  border: "2px solid rgba(255,215,0,0.4)",
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.2), inset 0 0 30px rgba(255,215,0,0.05)",
+                }}
+              >
+                {/* Hover glow */}
+                <div className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{
+                    boxShadow: "0 0 40px rgba(255,215,0,0.3), 0 0 80px rgba(255,165,0,0.15)",
+                  }}
+                />
+                {/* Border shine on hover */}
+                <div className="absolute inset-0 rounded-3xl border-2 border-transparent group-hover:border-[#FFD700]/60 transition-all duration-500" />
+                {/* Top shine */}
+                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#FFD700]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <span className="relative z-10 flex items-center gap-2">
+                  <span className="text-2xl group-hover:animate-bounce">📖</span>
+                  <span className="tracking-wide">ब्लॉग पढ़ें</span>
+                </span>
+              </Link>
+            </div>
+          </AnimatedHeading>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10">
-          <div className="w-6 h-10 border-2 border-white/60 rounded-full flex items-start justify-center p-1">
-            <div className="w-1.5 h-3 bg-white/80 rounded-full animate-bounce" />
-          </div>
-        </div>
+        {/* Bottom fade to next section */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#FFF8E7] to-transparent pointer-events-none" />
       </section>
 
       {/* ── STATS SECTION ── */}
-      <section className="py-16 bg-white relative">
+      <section className="py-20 relative overflow-hidden">
+        {/* Background layers */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-[#FFFDF5] to-[#FFF8E7]" />
+        {/* Ornamental pattern */}
+        <div className="absolute inset-0 opacity-[0.04] bg-repeat" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 3 L33 27 L57 30 L33 33 L30 57 L27 33 L3 30 L27 27 Z' fill='%238B0000'/%3E%3C/svg%3E")`,
+          backgroundSize: "80px 80px",
+        }} />
+        {/* Radial glow accents */}
+        <div className="absolute top-0 left-1/4 w-80 h-80 rounded-full bg-[radial-gradient(circle,rgba(255,215,0,0.12)_0%,transparent_70%)] pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-80 h-80 rounded-full bg-[radial-gradient(circle,rgba(255,153,51,0.1)_0%,transparent_70%)] pointer-events-none" />
+        {/* Top border */}
         <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#8B0000] via-[#FFD700] to-[#8B0000]" />
+
         <RevealSection>
-          <div className="max-w-6xl mx-auto px-4">
-            <h2 className="text-3xl font-extrabold text-[#8B0000] text-center mb-12">
+          <div className="max-w-6xl mx-auto px-4 relative z-10">
+            <h2 className="text-3xl font-extrabold text-[#8B0000] text-center mb-4 drop-shadow-[0_1px_2px_rgba(139,0,0,0.1)]">
               ✨ हमारी सेवा का प्रभाव ✨
             </h2>
+            {/* Subtitle */}
+            <div className="flex items-center justify-center gap-3 mb-12">
+              <div className="w-8 h-[2px] bg-[#DAA520]/40 rounded" />
+              <span className="text-[#B8860B] font-semibold text-sm tracking-wide">SEVA IMPACT</span>
+              <div className="w-8 h-[2px] bg-[#DAA520]/40 rounded" />
+            </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <Counter end={50000} label="भोजन सेवाएं" icon="🍛" />
               <Counter end={1200} label="भामाशाह" icon="👥" />
@@ -527,13 +1081,36 @@ export default function HomePage() {
       </section>
 
       {/* ── ABOUT TRUST SECTION ── */}
-      <section className="py-16 bg-[#FFF8E7]">
+      <section className="py-20 relative overflow-hidden">
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#FFF8E7] via-[#FFF3D6] to-[#FFEDC4] animate-gradient" style={{ backgroundSize: "200% 200%" }} />
+        {/* Corner flourishes */}
+        <div className="absolute top-0 left-0 w-40 h-40 opacity-[0.08] pointer-events-none">
+          <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="0" cy="0" r="80" fill="none" stroke="#8B0000" strokeWidth="1" />
+            <circle cx="0" cy="0" r="60" fill="none" stroke="#DAA520" strokeWidth="0.5" />
+            <circle cx="0" cy="0" r="40" fill="none" stroke="#FF9933" strokeWidth="0.5" />
+          </svg>
+        </div>
+        <div className="absolute bottom-0 right-0 w-40 h-40 opacity-[0.08] pointer-events-none transform rotate-180">
+          <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="0" cy="0" r="80" fill="none" stroke="#8B0000" strokeWidth="1" />
+            <circle cx="0" cy="0" r="60" fill="none" stroke="#DAA520" strokeWidth="0.5" />
+            <circle cx="0" cy="0" r="40" fill="none" stroke="#FF9933" strokeWidth="0.5" />
+          </svg>
+        </div>
+
         <RevealSection>
-          <div className="max-w-6xl mx-auto px-4">
-            <h2 className="text-3xl font-extrabold text-[#8B0000] text-center mb-6">
+          <div className="max-w-6xl mx-auto px-4 relative z-10">
+            <h2 className="text-3xl font-extrabold text-[#8B0000] text-center mb-3">
               🏛️ हमारे बारे में
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
+            <div className="flex items-center justify-center gap-3 mb-12">
+              <div className="w-8 h-[2px] bg-[#DAA520]/40 rounded" />
+              <span className="text-[#B8860B] font-semibold text-sm tracking-wide">ABOUT US</span>
+              <div className="w-8 h-[2px] bg-[#DAA520]/40 rounded" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
                 {
                   icon: "🎯",
@@ -571,40 +1148,131 @@ export default function HomePage() {
       </section>
 
       {/* ── SEVA SERVICES ── */}
-      <section className="py-16 bg-gradient-to-b from-[#8B0000] to-[#5C0000] text-white">
+      <section id="services" className="py-20 bg-gradient-to-b from-[#8B0000] via-[#6B0000] to-[#3d0000] text-white relative overflow-hidden">
+        {/* Background animated particles */}
+        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+          {Array.from({ length: 20 }).map((_, i) => (
+            <div
+              key={`sevap-${i}`}
+              className="absolute rounded-full"
+              style={{
+                width: `${3 + Math.random() * 4}px`,
+                height: `${3 + Math.random() * 4}px`,
+                background: i % 2 === 0 ? "#FFD700" : "#FFA500",
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                opacity: 0,
+                boxShadow: `0 0 4px ${i % 2 === 0 ? "#FFD700" : "#FFA500"}`,
+                animation: `sevaParticleRise ${4 + Math.random() * 6}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 5}s`,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Floating diya silhouettes in background */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.06]" aria-hidden="true">
+          <span className="absolute top-[10%] left-[5%] text-[120px] transform -rotate-12">🪔</span>
+          <span className="absolute top-[20%] right-[8%] text-[100px] transform rotate-6">🪔</span>
+          <span className="absolute bottom-[15%] left-[10%] text-[80px] transform -rotate-6">🪔</span>
+          <span className="absolute bottom-[25%] right-[5%] text-[110px] transform rotate-12">🪔</span>
+        </div>
+
         <RevealSection>
-          <div className="max-w-6xl mx-auto px-4">
-            <h2 className="text-3xl font-extrabold text-[#FFD700] text-center mb-12 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
-              🪔 हमारी सेवाएं 🪔
-            </h2>
+          <div className="max-w-6xl mx-auto px-4 relative z-10">
+            {/* Section heading with glow */}
+            <div className="text-center mb-14">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#FFD700] mb-3 drop-shadow-[0_0_20px_rgba(255,215,0,0.5)]">
+                🪔 हमारी सेवाएं 🪔
+              </h2>
+              <p className="text-white/60 font-semibold text-sm">परम धर्म सेवा के अंतर्गत निरंतर कार्यरत</p>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { icon: "🍛", title: "भोजन सेवा", desc: "प्रतिदिन निःशुल्क भोजन का आयोजन" },
-                { icon: "☕", title: "नाश्ता सेवा", desc: "सुबह के नाश्ते की व्यवस्था" },
-                { icon: "📿", title: "धार्मिक आयोजन", desc: "पूजन, भजन एवं कथा" },
-                { icon: "❤️", title: "सामुदायिक सेवा", desc: "जरूरतमंदों की सहायता" },
+                { icon: "🍛", title: "भोजन सेवा", desc: "प्रतिदिन निःशुल्क भोजन का आयोजन", gradient: "from-[#FF9933] to-[#CC7A00]" },
+                { icon: "☕", title: "नाश्ता सेवा", desc: "सुबह के नाश्ते की व्यवस्था", gradient: "from-[#DAA520] to-[#AA7C11]" },
+                { icon: "📿", title: "धार्मिक आयोजन", desc: "पूजन, भजन एवं कथा", gradient: "from-[#B8860B] to-[#8B6508]" },
+                { icon: "❤️", title: "सामुदायिक सेवा", desc: "जरूरतमंदों की सहायता", gradient: "from-[#CD5C5C] to-[#A52A2A]" },
               ].map((s, i) => {
                 const tilt = useTilt<HTMLDivElement>();
                 return (
                   <div
                     key={i}
                     {...tilt}
-                    className="bg-white/10 backdrop-blur rounded-2xl border border-[#FFD700]/40 p-6 text-center hover:bg-white/20 transition-all"
-                    style={{ transition: "transform 0.1s ease-out, background 0.3s" }}
+                    className="relative group cursor-default"
+                    style={{
+                      animationName: "sevaCardEnter",
+                      animationDuration: "0.6s",
+                      animationDelay: `${i * 0.15}s`,
+                      animationFillMode: "both",
+                    }}
                   >
-                    <span className="text-4xl block mb-3">{s.icon}</span>
-                    <h3 className="text-lg font-extrabold text-[#FFD700] mb-2">{s.title}</h3>
-                    <p className="text-white/80 text-sm">{s.desc}</p>
+                    {/* Animated border glow on hover */}
+                    <div
+                      className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                      style={{
+                        background: `conic-gradient(from 0deg, #FFD700, #FFA500, #FF8C00, #FFD700)`,
+                        padding: "2px",
+                        WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+                        WebkitMaskComposite: "xor",
+                        maskComposite: "exclude",
+                        animation: "borderSpin 3s linear infinite",
+                      }}
+                    />
+                    {/* Card body */}
+                    <div
+                      className="relative bg-white/[0.07] backdrop-blur-md rounded-2xl p-6 text-center border border-[#FFD700]/20 group-hover:border-transparent transition-all duration-500 hover:shadow-[0_0_40px_rgba(255,215,0,0.2)]"
+                    >
+                      {/* Icon container with pulse ring */}
+                      <div className="relative inline-block mb-5">
+                        {/* Pulse ring */}
+                        <div
+                          className="absolute inset-[-8px] rounded-full border-2 border-[#FFD700]/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                          style={{ animation: "sevaIconPulse 2s ease-in-out infinite" }}
+                        />
+                        {/* Icon */}
+                        <span
+                          className="relative text-5xl block transition-transform duration-300 group-hover:scale-125 group-hover:-translate-y-1"
+                          style={{ filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.4))" }}
+                        >
+                          {s.icon}
+                        </span>
+                      </div>
+
+                      {/* Title with gradient text */}
+                      <h3 className="text-xl font-extrabold mb-3 bg-gradient-to-r from-[#FFD700] to-[#FFA500] bg-clip-text text-transparent group-hover:from-[#FFEA00] group-hover:to-[#FFD700] transition-all duration-300">
+                        {s.title}
+                      </h3>
+
+                      {/* Description */}
+                      <p className="text-white/70 text-sm leading-relaxed mb-4 group-hover:text-white/90 transition-colors duration-300">
+                        {s.desc}
+                      </p>
+
+                      {/* Decorative bottom line */}
+                      <div className="w-0 group-hover:w-12 h-[2px] bg-gradient-to-r from-[#FFD700] to-transparent mx-auto transition-all duration-500 rounded" />
+                    </div>
                   </div>
                 );
               })}
             </div>
           </div>
         </RevealSection>
+
       </section>
 
       {/* ── 3D GALLERY ── */}
-      <section className="py-16 bg-[#FFF8E7] overflow-hidden">
+      <section id="gallery" className="py-20 relative overflow-hidden">
+        {/* Warm gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#FFF8E7] via-[#FFF0D0] to-[#FFE8C0]" />
+        {/* Subtle grid pattern */}
+        <div className="absolute inset-0 opacity-[0.03] bg-repeat" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='1.5' fill='%238B0000'/%3E%3C/svg%3E")`,
+          backgroundSize: "50px 50px",
+        }} />
+        {/* Top-right glow */}
+        <div className="absolute top-10 right-0 w-96 h-96 rounded-full bg-[radial-gradient(circle,rgba(218,165,32,0.1)_0%,transparent_70%)] pointer-events-none" />
         <RevealSection>
           <div className="max-w-6xl mx-auto px-4">
             <h2 className="text-3xl font-extrabold text-[#8B0000] text-center mb-4">
@@ -619,13 +1287,30 @@ export default function HomePage() {
       </section>
 
       {/* ── BLOG SECTION ── */}
-      <section id="blog" className="py-16 bg-white">
-        <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-[#FFD700] via-[#8B0000] to-[#FFD700]" />
+      <section id="blog" className="py-20 relative overflow-hidden">
+        {/* Layered background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-[#FEFCF5] to-[#FFF8E7]" />
+        {/* Side decorative stripes */}
+        <div className="absolute left-0 top-0 bottom-0 w-2 bg-gradient-to-b from-[#8B0000] via-[#DAA520] to-transparent opacity-20 pointer-events-none" />
+        {/* Subtle dot pattern */}
+        <div className="absolute inset-0 opacity-[0.025] bg-repeat pointer-events-none" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='2' cy='2' r='1' fill='%238B0000'/%3E%3C/svg%3E")`,
+        }} />
+        {/* Bottom-left glow */}
+        <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(255,153,51,0.08)_0%,transparent_70%)] pointer-events-none" />
+        {/* Top border gradient */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#DAA520]/30 to-transparent" />
+
         <RevealSection>
-          <div className="max-w-6xl mx-auto px-4">
-            <h2 className="text-3xl font-extrabold text-[#8B0000] text-center mb-4">
+          <div className="max-w-6xl mx-auto px-4 relative z-10">
+            <h2 className="text-3xl font-extrabold text-[#8B0000] text-center mb-3">
               📖 हमारा ब्लॉग
             </h2>
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <div className="w-8 h-[2px] bg-[#DAA520]/40 rounded" />
+              <span className="text-[#B8860B] font-semibold text-sm tracking-wide">OUR BLOG</span>
+              <div className="w-8 h-[2px] bg-[#DAA520]/40 rounded" />
+            </div>
             <p className="text-[#B8860B] text-center font-semibold mb-10">
               समाज की गतिविधियों, सेवा कार्यों और आयोजनों की जानकारी
             </p>
@@ -664,10 +1349,10 @@ export default function HomePage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/poster"
+                href="/admin/login"
                 className="px-8 py-4 bg-white text-[#8B0000] font-extrabold text-lg rounded-2xl shadow-xl hover:bg-[#FFF8E7] transition-all hover:scale-105"
               >
-                📋 आज का पोस्टर बनाएं
+                📋 पोस्टर बनाएं (एडमिन)
               </Link>
               <Link
                 href="/admin"
@@ -696,7 +1381,8 @@ export default function HomePage() {
               <h3 className="text-lg font-extrabold mb-3">त्वरित लिंक</h3>
               <div className="flex flex-col gap-2">
                 <Link href="/" className="text-[#FFD700]/70 hover:text-[#FFD700] text-sm transition">होम</Link>
-                <Link href="/poster" className="text-[#FFD700]/70 hover:text-[#FFD700] text-sm transition">पोस्टर जनरेटर</Link>
+                <Link href="/admin/login" className="text-[#FFD700]/70 hover:text-[#FFD700] text-sm transition">पोस्टर जनरेटर</Link>
+                <Link href="/contact" className="text-[#FFD700]/70 hover:text-[#FFD700] text-sm transition">संपर्क करें</Link>
                 <Link href="#blog" className="text-[#FFD700]/70 hover:text-[#FFD700] text-sm transition">ब्लॉग</Link>
                 <Link href="/admin" className="text-[#FFD700]/70 hover:text-[#FFD700] text-sm transition">प्रबंधन पैनल</Link>
               </div>

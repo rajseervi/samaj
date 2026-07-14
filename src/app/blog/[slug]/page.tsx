@@ -337,7 +337,7 @@ export default function BlogPostPage() {
             </div>
             <div className="flex gap-6">
               <Link href="/" className="text-[#FFD700]/70 hover:text-[#FFD700] text-sm transition">होम</Link>
-              <Link href="/poster" className="text-[#FFD700]/70 hover:text-[#FFD700] text-sm transition">पोस्टर</Link>
+              <Link href="/admin/login" className="text-[#FFD700]/70 hover:text-[#FFD700] text-sm transition">पोस्टर</Link>
               <Link href="/blog" className="text-[#FFD700] text-sm font-bold">ब्लॉग</Link>
             </div>
           </div>

@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { label: "खाते", href: "/admin/accounts", icon: "💰" },
   { label: "बही-खाता", href: "/admin/ledger", icon: "📒" },
   { label: "पोस्टर", href: "/admin/posters", icon: "📋" },
+  { label: "पूछताछ", href: "/admin/enquiries", icon: "📨" },
 ];
 
 function AdminShell({ children }: { children: ReactNode }) {

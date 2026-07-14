@@ -232,6 +232,33 @@ export async function getDashboardStats(): Promise<DashboardStats> {
   };
 }
 
+/* ─── Enquiries ─── */
+
+export interface Enquiry {
+  id: string;
+  name: string;
+  phone: string;
+  village: string;
+  type: "poster" | "general" | "donation" | "seva";
+  message: string;
+  status: "new" | "read" | "resolved";
+  createdAt: string;
+}
+
+export async function getEnquiries(): Promise<Enquiry[]> {
+  return fetchAll<Enquiry>("enquiries");
+}
+
+export async function updateEnquiryStatus(id: string, status: Enquiry["status"]): Promise<void> {
+  const db = getDb();
+  await firestoreUpdateDoc(doc(db, "enquiries", id), { status });
+}
+
+export async function deleteEnquiry(id: string): Promise<void> {
+  const db = getDb();
+  await deleteDoc(doc(db, "enquiries", id));
+}
+
 /* ─── Posters ─── */
 
 export async function getPosters(): Promise<Poster[]> {
