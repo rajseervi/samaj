@@ -39,13 +39,13 @@ export default function Header() {
           <Link href="/" className="flex items-center gap-3 group">
             {/* Om icon */}
             <div
-              className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center text-xl sm:text-2xl transition-all duration-500 border-2 shadow-lg ${
+              className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition-all duration-500 border-2 shadow-lg overflow-hidden ${
                 scrolled
                   ? "bg-[#FFD700] border-[#FFA500] shadow-[#FFD700]/30"
                   : "bg-white/15 border-white/30 shadow-black/20 group-hover:bg-[#FFD700] group-hover:border-[#FFA500]"
               }`}
             >
-              🕉️
+              <img src="/om-gold.svg" alt="ॐ" className="w-full h-full object-contain scale-110" />
             </div>
 
             {/* Text */}

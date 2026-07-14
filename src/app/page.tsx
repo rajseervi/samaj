@@ -544,119 +544,292 @@ function LightRays() {
   );
 }
 
-/* ─── Enhanced Rotating Om with 3D depth ─── */
+/* ─── Premium Ornate Om Component ─── */
 function EnhancedRotatingOm({ parallaxX, parallaxY }: { parallaxX: number; parallaxY: number }) {
+  const [hasMounted, setHasMounted] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  useEffect(() => { setHasMounted(true); }, []);
+  if (!hasMounted) return <div className="w-80 h-80 mx-auto" />;
+
+  // Pre-compute deterministic values for particles (uses index-based seed)
+  const particles = Array.from({ length: 30 }).map((_, i) => {
+    const seed = i * 137.5;
+    const angle = ((seed % 360) / 360) * 360;
+    const rad = (angle * Math.PI) / 180;
+    const dist = 170 + (seed % 60);
+    const size = 1.5 + ((seed % 100) / 100) * 3;
+    const delay = (seed % 400) / 100;
+    const dur = 3 + ((seed % 500) / 100);
+    const colorIdx = i % 3;
+    const colors = ["#FFF8DC", "#FFD700", "#FFA500"];
+    return { i, rad, dist, size, delay, dur, color: colors[colorIdx] };
+  });
+
   return (
     <div
-      className="relative w-56 h-56 mx-auto"
+      className="relative w-80 h-80 mx-auto cursor-default"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       style={{
-        perspective: "800px",
-        transform: `translateX(${parallaxX * -30}px) translateY(${parallaxY * -20}px)`,
-        transition: "transform 0.1s ease-out",
+        perspective: "355px",
+        transform: `
+          translateX(${parallaxX * -15}px)
+          translateY(${parallaxY * -10}px)
+          rotateY(${parallaxX * 8}deg)
+          rotateX(${parallaxY * -5}deg)
+        `,
+        transition: "transform 0.2s ease-out",
       }}
     >
-      {/* Outer glow aura */}
+      {/* === GLOW AURAS === */}
       <div
-        className="absolute inset-[-40px] rounded-full"
+        className="absolute inset-[-80px] rounded-full pointer-events-none"
         style={{
-          background: "radial-gradient(circle, rgba(255,215,0,0.3) 0%, rgba(255,165,0,0.15) 40%, transparent 70%)",
+          background: `radial-gradient(circle, rgba(255,215,0,${isHovered ? 0.2 : 0.12}) 0%, rgba(255,165,0,${isHovered ? 0.1 : 0.05}) 40%, transparent 70%)`,
           animation: "pulseAura 3s ease-in-out infinite",
+          transition: "background 0.5s ease",
         }}
       />
-      {/* Second glow layer */}
       <div
-        className="absolute inset-[-25px] rounded-full"
+        className="absolute inset-[-50px] rounded-full pointer-events-none"
         style={{
-          background: "radial-gradient(circle, rgba(255,200,0,0.2) 0%, transparent 60%)",
+          background: `radial-gradient(circle, rgba(255,200,0,${isHovered ? 0.18 : 0.08}) 0%, transparent 60%)`,
           animation: "pulseAura 3s ease-in-out infinite 0.5s",
+          transition: "background 0.5s ease",
         }}
       />
 
-      {/* Light rays ring */}
-      <div className="absolute inset-[-35px]" style={{ animation: "rotateOm 20s linear infinite" }}>
-        {Array.from({ length: 16 }).map((_, i) => (
+      {/* === 8-LAYER ORNAMENTAL RING SYSTEM === */}
+
+      {/* R8: outer pearl ring - 24 glowing dots */}
+      {Array.from({ length: 24 }).map((_, i) => {
+        const angle = (i / 24) * 360;
+        const rad = (angle * Math.PI) / 180;
+        const r = 200;
+        return (
           <div
-            key={`ray-${i}`}
-            className="absolute top-1/2 left-1/2 origin-left"
+            key={`p8-${i}`}
+            className="absolute w-2 h-2 rounded-full pointer-events-none"
             style={{
-              width: "80px",
-              height: "2px",
-              background: "linear-gradient(90deg, rgba(255,215,0,0.7), transparent)",
-              transform: `rotate(${i * 22.5}deg) translateY(-50%)`,
-              borderRadius: "2px",
-              animation: `rayIntensity ${2 + (i % 3)}s ease-in-out infinite ${i * 0.15}s`,
+              background: i % 3 === 0 ? "#FFD700" : i % 3 === 1 ? "#DAA520" : "#B8860B",
+              boxShadow: `0 0 4px ${i % 3 === 0 ? "#FFD700" : "#DAA520"}`,
+              left: `calc(50% + ${Math.cos(rad) * r}px - 4px)`,
+              top: `calc(50% + ${Math.sin(rad) * r}px - 4px)`,
+              opacity: 0.4,
+              animation: `petalDotPulse ${2.5 + (i % 3)}s ease-in-out infinite`,
+              animationDelay: `${i * 0.08}s`,
+            }}
+          />
+        );
+      })}
+
+      {/* R7: outer dashed */}
+      <div
+        className="absolute inset-[-34px] rounded-full pointer-events-none"
+        style={{
+          border: `${isHovered ? "2px" : "1.5px"} dashed rgba(255,215,0,${isHovered ? 0.3 : 0.18})`,
+          animation: `rotateOm ${isHovered ? 18 : 28}s linear infinite`,
+          transition: "border 0.5s ease, animation-duration 0.5s ease",
+        }}
+      />
+
+      {/* R6: thin solid */}
+      <div
+        className="absolute inset-[-26px] rounded-full pointer-events-none"
+        style={{
+          border: `1px solid rgba(255,200,0,${isHovered ? 0.3 : 0.18})`,
+          animation: `rotateOm ${isHovered ? 15 : 22}s linear infinite reverse`,
+          transition: "border 0.5s ease, animation-duration 0.5s ease",
+        }}
+      />
+
+      {/* R5: dotted band */}
+      <div
+        className="absolute inset-[-18px] rounded-full pointer-events-none"
+        style={{
+          border: `3px dotted rgba(255,180,0,${isHovered ? 0.35 : 0.22})`,
+          animation: `rotateOm ${isHovered ? 12 : 18}s linear infinite`,
+          transition: "border 0.5s ease, animation-duration 0.5s ease",
+        }}
+      />
+
+      {/* R4: double ring */}
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          inset: "-6px",
+          border: "1.5px solid rgba(255,215,0,0.15)",
+          animation: `rotateOm ${isHovered ? 14 : 24}s linear infinite reverse`,
+          transition: "animation-duration 0.5s ease",
+        }}
+      />
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          inset: "-4px",
+          border: "1px solid rgba(255,165,0,0.12)",
+          animation: `rotateOm ${isHovered ? 10 : 20}s linear infinite`,
+          transition: "animation-duration 0.5s ease",
+        }}
+      />
+
+      {/* R3: dashed */}
+      <div
+        className="absolute inset-[-6px] rounded-full pointer-events-none"
+        style={{
+          border: `2px dashed rgba(255,215,0,${isHovered ? 0.45 : 0.3})`,
+          animation: `rotateOm ${isHovered ? 7 : 12}s linear infinite reverse`,
+          transition: "border 0.5s ease, animation-duration 0.5s ease",
+        }}
+      />
+
+      {/* R2: lotus petal dots - 16 petals */}
+      {Array.from({ length: 16 }).map((_, i) => {
+        const angle = (i / 16) * 360;
+        const rad = (angle * Math.PI) / 180;
+        const r = 152;
+        const isGold = i % 4 === 0;
+        return (
+          <div
+            key={`petal-${i}`}
+            className="absolute pointer-events-none"
+            style={{
+              width: isGold ? "5px" : "3px",
+              height: isGold ? "5px" : "3px",
+              borderRadius: "50%",
+              background: isGold ? "#FFD700" : i % 4 === 2 ? "#DAA520" : "transparent",
+              border: i % 4 === 1 || i % 4 === 3 ? "1px solid rgba(255,215,0,0.35)" : "none",
+              boxShadow: isGold ? `0 0 8px #FFD700, 0 0 16px rgba(255,165,0,0.5)` : `0 0 3px #DAA520`,
+              left: `calc(50% + ${Math.cos(rad) * r}px)`,
+              top: `calc(50% + ${Math.sin(rad) * r}px)`,
+              transform: "translate(-50%, -50%)",
+              animation: `petalDotPulse ${2 + (i % 3)}s ease-in-out infinite`,
+              animationDelay: `${i * 0.12}s`,
+            }}
+          />
+        );
+      })}
+
+      {/* R1: inner solid */}
+      <div
+        className="absolute inset-2 rounded-full pointer-events-none"
+        style={{
+          border: `2.5px solid rgba(255,215,0,${isHovered ? 0.55 : 0.35})`,
+          animation: `rotateOm ${isHovered ? 5 : 9}s linear infinite`,
+          boxShadow: `0 0 10px rgba(255,215,0,${isHovered ? 0.3 : 0.15})`,
+          transition: "border 0.5s ease, box-shadow 0.5s ease, animation-duration 0.5s ease",
+        }}
+      />
+
+      {/* === MANDALA 8-POINTED STAR === */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <svg viewBox="0 0 320 320" className="w-full h-full absolute" style={{
+          animation: `rotateOm ${isHovered ? 8 : 16}s linear infinite reverse`,
+          transition: "animation-duration 0.5s ease",
+        }}>
+          <rect x="156" y="70" width="8" height="180" rx="4" fill="rgba(255,215,0,0.12)" transform="rotate(0, 160, 160)"/>
+          <rect x="156" y="70" width="8" height="180" rx="4" fill="rgba(255,215,0,0.12)" transform="rotate(45, 160, 160)"/>
+          <rect x="156" y="70" width="8" height="180" rx="4" fill="rgba(255,215,0,0.12)" transform="rotate(90, 160, 160)"/>
+          <rect x="156" y="70" width="8" height="180" rx="4" fill="rgba(255,215,0,0.12)" transform="rotate(135, 160, 160)"/>
+        </svg>
+      </div>
+
+      {/* === LIGHT BEAMS === */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{
+        animation: `rotateOm ${20}s linear infinite`,
+      }}>
+        {Array.from({ length: 12 }).map((_, i) => (
+          <div
+            key={`beam-${i}`}
+            className="absolute origin-bottom"
+            style={{
+              width: "2px",
+              height: "130px",
+              background: `linear-gradient(0deg, rgba(255,215,0,${isHovered ? 0.35 : 0.15}) 0%, transparent 100%)`,
+              transform: `rotate(${i * 30}deg)`,
+              bottom: "50%",
+              left: "50%",
+              marginLeft: "-1px",
             }}
           />
         ))}
       </div>
 
-      {/* Outer ring 1 - thick */}
+      {/* === MAIN GOLDEN SPHERE === */}
       <div
-        className="absolute inset-[-16px] rounded-full border-2 border-dotted border-[#FFD700]/40"
-        style={{ animation: "rotateOm 14s linear infinite" }}
-      />
-      {/* Outer ring 2 - thin */}
-      <div
-        className="absolute inset-[-10px] rounded-full border border-[#FFA500]/30"
-        style={{ animation: "rotateOm 11s linear infinite reverse" }}
-      />
-      {/* Outer ring 3 - dashed */}
-      <div
-        className="absolute inset-[-4px] rounded-full border-2 border-dashed border-[#FFD700]/50"
-        style={{ animation: "rotateOm 7s linear infinite" }}
-      />
-
-      {/* Main Om sphere */}
-      <div
-        className="w-full h-full rounded-full flex items-center justify-center border-[6px] border-[#FFD700]"
+        className="absolute inset-0 rounded-full flex items-center justify-center"
         style={{
-          background: "radial-gradient(circle at 40% 35%, #FFD700 0%, #FFA500 30%, #FF8C00 60%, #B8860B 100%)",
-          animation: "rotateOm3D 10s linear infinite",
-          transformStyle: "preserve-3d",
+          background: "radial-gradient(circle at 38% 32%, #FFE55C 0%, #FFD700 15%, #DAA520 35%, #B8860B 55%, #8B6508 75%, #4A2A00 100%)",
           boxShadow: `
-            0 0 80px rgba(255,215,0,0.5),
-            0 0 150px rgba(255,165,0,0.3),
-            0 0 200px rgba(255,140,0,0.2),
-            inset 0 0 60px rgba(255,255,200,0.3)
+            0 0 70px rgba(255,215,0,${isHovered ? 0.6 : 0.4}),
+            0 0 140px rgba(255,165,0,${isHovered ? 0.35 : 0.22}),
+            0 0 220px rgba(255,140,0,${isHovered ? 0.2 : 0.12}),
+            0 0 300px rgba(255,100,0,${isHovered ? 0.1 : 0.05}),
+            inset 0 0 90px rgba(255,255,200,${isHovered ? 0.2 : 0.12}),
+            inset 0 0 40px rgba(0,0,0,0.3)
           `,
+          border: "5px solid #DAA520",
+          animation: `omSphereFloat ${isHovered ? 3 : 6}s ease-in-out infinite`,
+          transformStyle: "preserve-3d",
+          transition: "box-shadow 0.5s ease, animation-duration 0.5s ease",
         }}
       >
-        {/* Inner ring on sphere */}
+        {/* Inner ring 1 */}
         <div
-          className="absolute inset-3 rounded-full border border-white/30"
-          style={{ animation: "rotateOm 6s linear infinite reverse" }}
-        />
-        {/* Om symbol */}
-        <span
-          className="text-7xl relative z-10"
+          className="absolute inset-5 rounded-full pointer-events-none"
           style={{
-            animation: "counterRotate3D 10s linear infinite",
-            filter: "drop-shadow(0 4px 20px rgba(0,0,0,0.6)) drop-shadow(0 0 15px rgba(255,215,0,0.4))",
+            border: "2px solid rgba(255,255,255,0.2)",
+            animation: `rotateOm ${isHovered ? 3 : 7}s linear infinite reverse`,
+            transition: "animation-duration 0.5s ease",
           }}
-        >
-          🕉️
-        </span>
+        />
+        {/* Inner ring 2 */}
+        <div
+          className="absolute inset-10 rounded-full pointer-events-none"
+          style={{
+            border: "1px dotted rgba(255,255,255,0.12)",
+            animation: `rotateOm ${isHovered ? 4 : 9}s linear infinite`,
+            transition: "animation-duration 0.5s ease",
+          }}
+        />
+
+        {/* Shiv netra / Trishul dots */}
+        <div className="absolute top-[42%] left-1/2 -translate-x-1/2 flex gap-5 pointer-events-none">
+          <div className="w-1.5 h-1.5 rounded-full bg-[#FFF8DC]/60" style={{ boxShadow: "0 0 4px #FFD700" }}/>
+          <div className="w-1.5 h-1.5 rounded-full bg-[#FFD700]/80" style={{ boxShadow: "0 0 6px #FFD700, 0 0 10px rgba(255,165,0,0.5)" }}/>
+          <div className="w-1.5 h-1.5 rounded-full bg-[#FFF8DC]/60" style={{ boxShadow: "0 0 4px #FFD700" }}/>
+        </div>
+
+        {/* The Om symbol */}
+        <img
+          src="/om-gold.svg"
+          alt="ॐ"
+          className="w-[45%] h-[45%] relative z-10"
+          style={{
+            filter: "drop-shadow(0 6px 25px rgba(0,0,0,0.7)) drop-shadow(0 0 25px rgba(255,215,0,0.35)) drop-shadow(0 0 50px rgba(255,165,0,0.2))",
+            animation: "omBreath 3.5s ease-in-out infinite",
+          }}
+        />
       </div>
 
-      {/* Floating sparkles around Om */}
-      {Array.from({ length: 8 }).map((_, i) => {
-        const angle = (i / 8) * 360;
-        const radius = 120;
-        return (
-          <div
-            key={`sparkle-${i}`}
-            className="absolute w-2 h-2 rounded-full"
-            style={{
-              background: "#FFD700",
-              boxShadow: "0 0 8px #FFD700, 0 0 16px #FFA500",
-              left: `calc(50% + ${Math.cos((angle * Math.PI) / 180) * radius}px - 4px)`,
-              top: `calc(50% + ${Math.sin((angle * Math.PI) / 180) * radius}px - 4px)`,
-              animation: `sparkleOrbit ${3 + (i % 3)}s linear infinite`,
-              animationDelay: `${i * 0.3}s`,
-            }}
-          />
-        );
-      })}
+      {/* === AMBIENT SPARKLE PARTICLES === */}
+      {particles.map((p) => (
+        <div
+          key={`amb-${p.i}`}
+          className="absolute rounded-full pointer-events-none"
+          style={{
+            width: `${p.size}px`,
+            height: `${p.size}px`,
+            background: p.color,
+            boxShadow: `0 0 ${p.size * 2}px ${p.color}`,
+            left: `calc(50% + ${Math.cos(p.rad) * p.dist}px)`,
+            top: `calc(50% + ${Math.sin(p.rad) * p.dist}px)`,
+            opacity: 0,
+            animation: `ambientSparkle ${p.dur}s ease-in-out infinite`,
+            animationDelay: `${p.delay}s`,
+          }}
+        />
+      ))}
     </div>
   );
 }
@@ -783,6 +956,25 @@ export default function HomePage() {
         @keyframes pulseAura {
           0%, 100% { transform: scale(0.95); opacity: 0.6; }
           50% { transform: scale(1.1); opacity: 1; }
+        }
+        /* ── Enhanced Om animations ── */
+        @keyframes petalDotPulse {
+          0%, 100% { transform: scale(1); opacity: 0.4; }
+          50% { transform: scale(1.8); opacity: 1; }
+        }
+        @keyframes omSphereFloat {
+          0%, 100% { transform: translateY(0px) scale(1); }
+          50% { transform: translateY(-6px) scale(1.02); }
+        }
+        @keyframes omBreath {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.04); }
+        }
+        @keyframes ambientSparkle {
+          0%, 100% { opacity: 0; transform: scale(0.3) translateY(0px); }
+          30% { opacity: 0.8; transform: scale(1.2) translateY(-4px); }
+          70% { opacity: 0.4; transform: scale(0.8) translateY(2px); }
+          100% { opacity: 0; transform: scale(0.3) translateY(0px); }
         }
         @keyframes sparkleOrbit {
           0% { transform: rotate(0deg) translateX(0px) scale(1); opacity: 1; }
@@ -936,7 +1128,7 @@ export default function HomePage() {
           }}
         >
           {/* 3D Rotating Om */}
-          <AnimatedHeading className="mb-10" delay={0}>
+          <AnimatedHeading className="mb-10 mt-10" delay={0}>
             <EnhancedRotatingOm parallaxX={mouseParallax.x} parallaxY={mouseParallax.y} />
           </AnimatedHeading>
 

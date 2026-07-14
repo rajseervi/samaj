@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <!-- Rich golden radial gradient -->
+    <radialGradient id="bgGrad" cx="50%" cy="48%" r="48%">
+      <stop offset="0%" style="stop-color:#3A0000"/>
+      <stop offset="40%" style="stop-color:#1A0000"/>
+      <stop offset="100%" style="stop-color:#0A0000"/>
+    </radialGradient>
+    <!-- Main gold text gradient -->
+    <linearGradient id="goldText" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFF8DC"/>
+      <stop offset="12%" style="stop-color:#FFFACD"/>
+      <stop offset="30%" style="stop-color:#FFD700"/>
+      <stop offset="55%" style="stop-color:#FFC125"/>
+      <stop offset="72%" style="stop-color:#DAA520"/>
+      <stop offset="88%" style="stop-color:#B8860B"/>
+      <stop offset="100%" style="stop-color:#8B6914"/>
+    </linearGradient>
+    <!-- Ring gradient -->
+    <linearGradient id="ringGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700"/>
+      <stop offset="50%" style="stop-color:#FF8C00"/>
+      <stop offset="100%" style="stop-color:#FFD700"/>
+    </linearGradient>
+    <!-- Glow filters -->
+    <filter id="omGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <filter id="omShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000000" flood-opacity="0.7"/>
+    </filter>
+    <filter id="outerGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="15" result="blur"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 0.6  0 0 0 0 0  0 0 0 0.4 0" result="colored"/>
+      <feMerge>
+        <feMergeNode in="colored"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Outer dark circle background -->
+  <circle cx="200" cy="198" r="190" fill="url(#bgGrad)"/>
+  <circle cx="200" cy="198" r="188" fill="none" stroke="#B8860B" stroke-width="1.5" opacity="0.5"/>
+
+  <!-- === ORNATE RING SYSTEM === -->
+
+  <!-- Ring 6 - outermost dotted -->
+  <circle cx="200" cy="198" r="178" fill="none" stroke="#FFD700" stroke-width="1" stroke-dasharray="2 12" opacity="0.35" stroke-linecap="round"/>
+
+  <!-- Ring 5 - thin solid -->
+  <circle cx="200" cy="198" r="170" fill="none" stroke="url(#ringGold)" stroke-width="0.7" opacity="0.4"/>
+
+  <!-- Ring 4 - dashed decorative -->
+  <circle cx="200" cy="198" r="162" fill="none" stroke="#DAA520" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.35"/>
+
+  <!-- Ring 3 - circle of small dots -->
+  <g opacity="0.45">
+    <circle cx="200" cy="48" r="3.5" fill="#FFD700"/>
+    <circle cx="200" cy="348" r="3.5" fill="#FFD700"/>
+    <circle cx="47" cy="198" r="3.5" fill="#FFD700"/>
+    <circle cx="353" cy="198" r="3.5" fill="#FFD700"/>
+    <circle cx="91" cy="89" r="2.8" fill="#FFD700"/>
+    <circle cx="309" cy="89" r="2.8" fill="#FFD700"/>
+    <circle cx="91" cy="307" r="2.8" fill="#FFD700"/>
+    <circle cx="309" cy="307" r="2.8" fill="#FFD700"/>
+    <circle cx="140" cy="52" r="2.2" fill="#DAA520"/>
+    <circle cx="260" cy="52" r="2.2" fill="#DAA520"/>
+    <circle cx="140" cy="344" r="2.2" fill="#DAA520"/>
+    <circle cx="260" cy="344" r="2.2" fill="#DAA520"/>
+    <circle cx="52" cy="140" r="2.2" fill="#DAA520"/>
+    <circle cx="52" cy="256" r="2.2" fill="#DAA520"/>
+    <circle cx="348" cy="140" r="2.2" fill="#DAA520"/>
+    <circle cx="348" cy="256" r="2.2" fill="#DAA520"/>
+    <circle cx="75" cy="118" r="2" fill="#B8860B"/>
+    <circle cx="325" cy="118" r="2" fill="#B8860B"/>
+    <circle cx="75" cy="278" r="2" fill="#B8860B"/>
+    <circle cx="325" cy="278" r="2" fill="#B8860B"/>
+    <circle cx="118" cy="75" r="2" fill="#B8860B"/>
+    <circle cx="282" cy="75" r="2" fill="#B8860B"/>
+    <circle cx="118" cy="321" r="2" fill="#B8860B"/>
+    <circle cx="282" cy="321" r="2" fill="#B8860B"/>
+  </g>
+
+  <!-- Ring 2 - solid ring -->
+  <circle cx="200" cy="198" r="146" fill="none" stroke="url(#ringGold)" stroke-width="1.2" opacity="0.5"/>
+
+  <!-- === LOTUS PETALS RING === -->
+  <g opacity="0.25">
+    <!-- 16 lotus petals arranged in circle -->
+    <path d="M200,60 Q215,106 200,118 Q185,106 200,60Z" fill="none" stroke="#FFD700" stroke-width="0.7"/>
+    <path d="M200,60 Q215,106 200,118 Q185,106 200,60Z" fill="url(#ringGold)" opacity="0.1"/>
+    <path d="M200,336 Q215,290 200,278 Q185,290 200,336Z" fill="none" stroke="#FFD700" stroke-width="0.7"/>
+    <path d="M200,336 Q215,290 200,278 Q185,290 200,336Z" fill="url(#ringGold)" opacity="0.1"/>
+    <path d="M62,200 Q108,185 120,200 Q108,215 62,200Z" fill="none" stroke="#FFD700" stroke-width="0.7"/>
+    <path d="M62,200 Q108,185 120,200 Q108,215 62,200Z" fill="url(#ringGold)" opacity="0.1"/>
+    <path d="M338,200 Q292,185 280,200 Q292,215 338,200Z" fill="none" stroke="#FFD700" stroke-width="0.7"/>
+    <path d="M338,200 Q292,185 280,200 Q292,215 338,200Z" fill="url(#ringGold)" opacity="0.1"/>
+    <!-- Diagonal petals -->
+    <path d="M102,102 Q138,126 138,138 Q122,126 102,102Z" fill="none" stroke="#FFD700" stroke-width="0.7"/>
+    <path d="M102,102 Q138,126 138,138 Q122,126 102,102Z" fill="url(#ringGold)" opacity="0.1"/>
+    <path d="M298,102 Q262,126 262,138 Q278,126 298,102Z" fill="none" stroke="#FFD700" stroke-width="0.7"/>
+    <path d="M298,102 Q262,126 262,138 Q278,126 298,102Z" fill="url(#ringGold)" opacity="0.1"/>
+    <path d="M102,294 Q138,270 138,258 Q122,270 102,294Z" fill="none" stroke="#FFD700" stroke-width="0.7"/>
+    <path d="M102,294 Q138,270 138,258 Q122,270 102,294Z" fill="url(#ringGold)" opacity="0.1"/>
+    <path d="M298,294 Q262,270 262,258 Q278,270 298,294Z" fill="none" stroke="#FFD700" stroke-width="0.7"/>
+    <path d="M298,294 Q262,270 262,258 Q278,270 298,294Z" fill="url(#ringGold)" opacity="0.1"/>
+  </g>
+
+  <!-- Ring 1 - inner solid with ornaments -->
+  <circle cx="200" cy="198" r="128" fill="none" stroke="#DAA520" stroke-width="2" opacity="0.4"/>
+
+  <!-- Inner glow ring -->
+  <circle cx="200" cy="198" r="124" fill="none" stroke="rgba(255,215,0,0.15)" stroke-width="3"/>
+
+  <!-- 4 ornamental corner designs -->
+  <g opacity="0.3">
+    <!-- Top -->
+    <path d="M200,76 Q208,86 200,96 Q192,86 200,76Z" fill="#FFD700"/>
+    <circle cx="200" cy="74" r="2" fill="#FFD700"/>
+    <!-- Bottom -->
+    <path d="M200,300 Q208,310 200,320 Q192,310 200,300Z" fill="#FFD700"/>
+    <circle cx="200" cy="322" r="2" fill="#FFD700"/>
+    <!-- Left -->
+    <path d="M76,198 Q86,206 96,198 Q86,190 76,198Z" fill="#FFD700"/>
+    <circle cx="74" cy="198" r="2" fill="#FFD700"/>
+    <!-- Right -->
+    <path d="M300,198 Q310,206 320,198 Q310,190 300,198Z" fill="#FFD700"/>
+    <circle cx="322" cy="198" r="2" fill="#FFD700"/>
+  </g>
+
+  <!-- Soft inner glow behind Om -->
+  <circle cx="200" cy="196" r="100" fill="url(#ringGold)" opacity="0.07" filter="url(#omGlow)"/>
+
+  <!-- === OM CHARACTER - Multi-layer for premium look === -->
+  <g filter="url(#omShadow)">
+    <!-- Layer 4: Deep shadow offset -->
+    <text x="200" y="252" text-anchor="middle" font-size="165" font-family="'Noto Serif Devanagari','Devanagari MT','Arial Unicode MS','Mangal',serif" font-weight="bold" fill="#5C2E00" transform="translate(2, 2)">ॐ</text>
+
+    <!-- Layer 3: Dark outline -->
+    <text x="200" y="250" text-anchor="middle" font-size="165" font-family="'Noto Serif Devanagari','Devanagari MT','Arial Unicode MS','Mangal',serif" font-weight="bold" fill="#3D1A00" stroke="#3D1A00" stroke-width="4" stroke-linejoin="round">ॐ</text>
+
+    <!-- Layer 2: Gold gradient fill -->
+    <text x="200" y="250" text-anchor="middle" font-size="165" font-family="'Noto Serif Devanagari','Devanagari MT','Arial Unicode MS','Mangal',serif" font-weight="bold" fill="url(#goldText)">ॐ</text>
+
+    <!-- Layer 1: Subtle white highlight on top-left -->
+    <text x="197" y="247" text-anchor="middle" font-size="165" font-family="'Noto Serif Devanagari','Devanagari MT','Arial Unicode MS','Mangal',serif" font-weight="bold" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" stroke-linejoin="round">ॐ</text>
+  </g>
+
+  <!-- === SPARKLE ACCENTS === -->
+  <g opacity="0.6">
+    <!-- Top sparkle -->
+    <path d="M200,62 L202,70 L210,72 L202,74 L200,82 L198,74 L190,72 L198,70Z" fill="#FFF8DC">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+    </path>
+    <!-- Bottom sparkle -->
+    <path d="M200,318 L201,324 L207,326 L201,328 L200,334 L199,328 L193,326 L199,324Z" fill="#FFF8DC">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="2.5s" repeatCount="indefinite" begin="0.5s"/>
+    </path>
+    <!-- Left sparkle -->
+    <path d="M80,198 L86,199 L88,205 L90,199 L96,198 L90,197 L88,191 L86,197Z" fill="#FFD700">
+      <animate attributeName="opacity" values="0.4;1;0.4" dur="3s" repeatCount="indefinite" begin="1s"/>
+    </path>
+    <!-- Right sparkle -->
+    <path d="M304,198 L310,199 L312,205 L314,199 L320,198 L314,197 L312,191 L310,197Z" fill="#FFD700">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="2.2s" repeatCount="indefinite" begin="1.5s"/>
+    </path>
+    <!-- Small accent sparkles -->
+    <circle cx="136" cy="105" r="1.5" fill="#FFD700">
+      <animate attributeName="opacity" values="0;0.8;0" dur="3s" repeatCount="indefinite" begin="0.3s"/>
+    </circle>
+    <circle cx="264" cy="105" r="1.5" fill="#FFD700">
+      <animate attributeName="opacity" values="0;0.8;0" dur="3s" repeatCount="indefinite" begin="1.8s"/>
+    </circle>
+    <circle cx="136" cy="291" r="1.5" fill="#FFD700">
+      <animate attributeName="opacity" values="0;0.8;0" dur="2.8s" repeatCount="indefinite" begin="1s"/>
+    </circle>
+    <circle cx="264" cy="291" r="1.5" fill="#FFD700">
+      <animate attributeName="opacity" values="0;0.8;0" dur="3.2s" repeatCount="indefinite" begin="0.7s"/>
+    </circle>
+  </g>
+
+  <!-- Bottom decorative text -->
+  <text x="200" y="370" text-anchor="middle" font-size="11" font-family="serif" fill="#DAA520" opacity="0.5" letter-spacing="4">॥ ॐ ॥</text>
+</svg>
